@@ -1,0 +1,11 @@
+{
+  "name": "cryptovase",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/styu/cryptovase.git",
+  "author": "Stephanie Yu <stephaniey@palantir.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "webpack": "^3.8.1"
+  }
+}
