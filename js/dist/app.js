@@ -69,7 +69,7 @@
 
 "use strict";
 const getVaseParams = function (seed) {
-    var seed = seed || [Math.random(), Math.random(), Math.random(), Math.random(), Math.random(), Math.random(), Math.random(), Math.random()];
+    var seed = seed || [Math.random(), Math.random(), Math.random(), Math.random(), Math.random(), Math.random(), Math.random(), Math.random(), Math.random()];
     var features = {
         foot1: {
             coords: [2, 0],
@@ -89,7 +89,8 @@ const getVaseParams = function (seed) {
         },
         body2: {
             coords: [3, 6],
-            hashId: 2
+            hashId: 2,
+            multiplierHash: 8
         },
         body3: {
             coords: [2.7, 8],
@@ -127,7 +128,16 @@ const getVaseParams = function (seed) {
             console.log(heightTolerance);
             heightVariance = heightTolerance * Math.random() / 2;
         }
-        points.push([features[i].coords[0] + seed[features[i].hashId], features[i].coords[1] - heightVariance]);
+
+        if (features[i].multiplierHash !== undefined) {
+            var offset = seed[features[i].multiplierHash];
+        } else {
+            var offset = 0.5;
+        }
+        var y = features[i].coords[1] - heightVariance;
+        var x = features[i].coords[0] + seed[features[i].hashId] + (offset - 0.5) * 3 + seed[8] * 2;
+
+        points.push([x, y]);
         prevFeature = i;
     }
 
