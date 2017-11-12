@@ -173,11 +173,7 @@ const getVaseParams = function (seed) {
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vaseify__ = __webpack_require__(0);
-<<<<<<< HEAD
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_threejs_export_stl_src__ = __webpack_require__(4);
-=======
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_threejs_export_stl_src__ = __webpack_require__(2);
->>>>>>> Proper bouncy ground
 
 
 
@@ -328,11 +324,7 @@ var downloadVase = function () {
 };
 
 /***/ }),
-<<<<<<< HEAD
 /* 4 */
-=======
-/* 2 */
->>>>>>> Proper bouncy ground
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
