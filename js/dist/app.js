@@ -118,14 +118,10 @@ scene.add(mesh);
 var prevFog = false;
 
 var render = function () {
-
     requestAnimationFrame(render);
 
-    if (!options.fixed) {
-
-        mesh.rotation.x += 0.005;
-        mesh.rotation.y += 0.005;
-    }
+    mesh.rotation.x += 0.005;
+    mesh.rotation.y += 0.005;
 
     renderer.render(scene, camera);
 };
