@@ -101,19 +101,19 @@ const getVaseParams = function (seed) {
             hashId: 4
         },
         neck1: {
-            coords: [1.5, 10.5],
+            coords: [1, 10.5],
             hashId: 5
         },
         neck2: {
-            coords: [1.5, 11],
+            coords: [1, 11],
             hashId: 6
         },
         mouth1: {
-            coords: [2.5, 13],
+            coords: [2, 12],
             hashId: 7
         },
         mouth2: {
-            coords: [2.5, 13.5],
+            coords: [2, 12.3],
             hashId: 7
         }
     };
@@ -135,7 +135,7 @@ const getVaseParams = function (seed) {
             var offset = 0.5;
         }
         var y = features[i].coords[1] - heightVariance;
-        var x = features[i].coords[0] + seed[features[i].hashId] + (offset - 0.5) * 3 + seed[8] * 2;
+        var x = features[i].coords[0] + seed[features[i].hashId] + (offset - 0.5) * 3 + seed[8] * seed[8];
 
         points.push([x, y]);
         prevFeature = i;
@@ -191,19 +191,29 @@ lathe.rotation.x += Math.PI / 8;
 scene.add(lathe);
 var hasPaused = false;
 
+var phiVelocity = Math.PI / 90;
+var totalSteps = Math.PI * 2 / (Math.PI / 90);
+var currentStep = 0;
+
+var bezier = function (t) {
+    return t < .5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1;
+};
+
 var render = function () {
-    if (phiLength <= Math.PI * 2) {
-        phiLength += Math.PI / 90;
-        requestAnimationFrame(render);
-        lathe.rotation.x += Math.PI / 1500;
-        lathe.rotation.z -= Math.PI / 6000;
+    lathe.rotation.x += Math.PI / 1500;
+    lathe.rotation.z -= Math.PI / 6000;
+
+    requestAnimationFrame(render);
+    if (currentStep <= totalSteps) {
+
+        phiLength = bezier(currentStep / totalSteps) * Math.PI * 2;
         geometry = new THREE.LatheBufferGeometry(points, 30, -Math.PI / 2, phiLength);
         lathe.geometry.dispose();
 
         lathe.geometry = geometry;
-
-        renderer.render(scene, camera);
+        currentStep++;
     }
+    renderer.render(scene, camera);
 };
 
 renderer.render(scene, camera);

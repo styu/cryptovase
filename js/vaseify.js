@@ -31,19 +31,19 @@ export const getVaseParams = function (seed) {
             hashId: 4
         },
         neck1: {
-            coords: [1.5, 10.5],
+            coords: [1, 10.5],
             hashId: 5
         },
         neck2: {
-            coords: [1.5, 11],
+            coords: [1, 11],
             hashId: 6
         },
         mouth1: {
-            coords: [2.5, 13],
+            coords: [2, 12],
             hashId: 7
         },
         mouth2: {
-            coords: [2.5, 13.5],
+            coords: [2, 12.3],
             hashId: 7
         }
     }
@@ -66,7 +66,7 @@ export const getVaseParams = function (seed) {
 
         }
         var y = features[i].coords[1] - heightVariance
-        var x = features[i].coords[0] + seed[features[i].hashId] + (offset-0.5)*3 + seed[8]*2;
+        var x = features[i].coords[0] + seed[features[i].hashId] + (offset-0.5)*3 + seed[8]*seed[8];
 
         points.push([x, y])
         prevFeature = i;

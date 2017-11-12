@@ -101,19 +101,19 @@ const getVaseParams = function (seed) {
             hashId: 4
         },
         neck1: {
-            coords: [1.5, 10.5],
+            coords: [1, 10.5],
             hashId: 5
         },
         neck2: {
-            coords: [1.5, 11],
+            coords: [1, 11],
             hashId: 6
         },
         mouth1: {
-            coords: [2.5, 13],
+            coords: [2, 12],
             hashId: 7
         },
         mouth2: {
-            coords: [2.5, 13.5],
+            coords: [2, 12.3],
             hashId: 7
         }
     };
@@ -135,7 +135,7 @@ const getVaseParams = function (seed) {
             var offset = 0.5;
         }
         var y = features[i].coords[1] - heightVariance;
-        var x = features[i].coords[0] + seed[features[i].hashId] + (offset - 0.5) * 3 + seed[8] * 2;
+        var x = features[i].coords[0] + seed[features[i].hashId] + (offset - 0.5) * 3 + seed[8] * seed[8];
 
         points.push([x, y]);
         prevFeature = i;
@@ -165,13 +165,13 @@ const drawVase = function (seed) {
     var c2 = document.getElementById('c').getContext('2d');
     c2.fillStyle = '#f00';
     c2.beginPath();
-    c2.moveTo(0, params[params.length - 1][1] * scale);
+    // c2.moveTo(0, params[(params.length-1)][1]*scale);
 
     for (let i in params) {
         const vertex = params[i];
         c2.lineTo(vertex[0] * scale, (13.5 - vertex[1]) * scale);
     }
-    c2.lineTo(0, 0);
+    // c2.lineTo(0, 0)
     c2.closePath();
     c2.fill();
 };
