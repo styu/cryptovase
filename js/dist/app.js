@@ -171,7 +171,7 @@ const getVaseParams = function (seed) {
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vaseify__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_threejs_export_stl_src__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_threejs_export_stl_src__ = __webpack_require__(3);
 
 
 
@@ -180,17 +180,17 @@ Physijs.scripts.ammo = './ammo.js';
 
 var scene = new THREE.Scene();
 // scene.setGravity(new THREE.Vector3( 0, 0, 0 ));
-const scale = 3;
-const width = 300 * scale;
-const height = 400 * scale;
+const scale = 2;
+const width = 400 * scale;
+const height = 300 * scale;
 var camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 50);
 camera.position.z = 25;
 
 var renderer = new THREE.WebGLRenderer({ antialias: true });
-renderer.setPixelRatio(window.devicePixelRatio);
+// renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setSize(width, height);
 renderer.setClearColor(0xffffff, 1);
-document.body.appendChild(renderer.domElement);
+document.getElementById('vaseWindow').appendChild(renderer.domElement);
 
 var lights = [];
 lights[0] = new THREE.PointLight(0xffffff, 1, 0);
@@ -212,7 +212,7 @@ const highest = Math.max(...vasePoints.map(point => point[1]));
 // ok what
 
 var drawVase = function (points) {
-    var scale = (highest - lowest) * window.devicePixelRatio;
+    var scale = 18;
     var firstCanvas = document.getElementsByTagName("canvas")[0];
     var overlayCanvas = document.getElementById('overlay');
     overlayCanvas.width = firstCanvas.width;
@@ -224,7 +224,7 @@ var drawVase = function (points) {
 
     for (let i in points) {
         let vertex = points[i];
-        c2.lineTo(firstCanvas.width / 4 - vertex[0] * scale, (12.3 - vertex[1]) * scale + 110);
+        c2.lineTo(firstCanvas.width / 2 - vertex[0] * scale, (12.3 - vertex[1]) * scale + 80);
     }
     // c2.lineTo(0, 0)
     c2.closePath();
@@ -337,7 +337,8 @@ var downloadVase = function () {
 };
 
 /***/ }),
-/* 2 */
+/* 2 */,
+/* 3 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
