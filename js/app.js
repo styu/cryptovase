@@ -1,4 +1,5 @@
 import { getVaseParams } from "./vaseify";
+import * as exportSTL from 'threejs-export-stl';
 
 Physijs.scripts.worker = './js/physijs_worker.js';
 Physijs.scripts.ammo = './ammo.js';
@@ -42,11 +43,13 @@ lathe.rotation.x += Math.PI / 8;
 scene.add(lathe);
 var hasPaused = false;
 
+var finalVase;
+
 var phiVelocity = Math.PI / 90;
-var totalSteps  = (Math.PI * 2) / (Math.PI / 90);
+var totalSteps = (Math.PI * 2) / (Math.PI / 90);
 var currentStep = 0;
 
-var bezier = function (t) { return t<.5 ? 4*t*t*t : (t-1)*(2*t-2)*(2*t-2)+1 }
+var bezier = function (t) { return t < .5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1 }
 
 var hasSetGravity = false;
 // scene.addEventListener(
@@ -63,13 +66,14 @@ var render = function () {
     requestAnimationFrame(render);
     if (currentStep <= totalSteps) {
 
-        phiLength = bezier(currentStep / totalSteps) * Math.PI*2
+        phiLength = bezier(currentStep / totalSteps) * Math.PI * 2
         geometry = new THREE.LatheBufferGeometry(
             points, 30, -Math.PI / 2, phiLength
         );
         lathe.geometry.dispose();
 
         lathe.geometry = geometry;
+        finalVase = geometry;
         currentStep += 1;
     }
     renderer.render(scene, camera);
@@ -90,3 +94,17 @@ setTimeout(function () {
 }, 500);
 // render();
 
+setTimeout(function () {
+    let g = finalVase;
+    g.type="BufferGeometry"
+    console.log(g);
+    let data = exportSTL.fromGeometry(g);
+    console.log(data);
+    const blob = new Blob([data], { type: exportSTL.mimeType });
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "vase.stl";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+}, 3000);
