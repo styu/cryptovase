@@ -1,4 +1,4 @@
-getVaseParams = function (seed) {
+export const getVaseParams = function (seed) {
     var seed = seed || [Math.random(), Math.random(), Math.random(), Math.random(), Math.random(), Math.random(), Math.random(), Math.random()]
     var features = {
         foot1: {
@@ -49,11 +49,11 @@ getVaseParams = function (seed) {
 
     var points = [];
     var prevFeature;
-    for (i in features) {
+    for (let i in features) {
         var heightVariance = 0;
         if (prevFeature) {
             // get difference between features
-            heightTolerance = features[i].coords[1] - features[prevFeature].coords[1];
+            let heightTolerance = features[i].coords[1] - features[prevFeature].coords[1];
             console.log(heightTolerance);
             heightVariance = heightTolerance*Math.random()/2
         }
@@ -65,27 +65,27 @@ getVaseParams = function (seed) {
 }
 
 // takes list of points and generates them
-drawVase = function (seed) {
+// drawVase = function (seed) {
 
-    var params = getVaseParams(seed);
-    var scale = 30;
+//     var params = getVaseParams(seed);
+//     var scale = 30;
 
-    var c2 = document.getElementById('c').getContext('2d');
-    c2.fillStyle = '#f00';
-    c2.beginPath();
-    c2.moveTo(0, params[(params.length-1)][1]*scale);
+//     var c2 = document.getElementById('c').getContext('2d');
+//     c2.fillStyle = '#f00';
+//     c2.beginPath();
+//     c2.moveTo(0, params[(params.length-1)][1]*scale);
 
-    for (i in params) {
-        vertex = params[i]
-        c2.lineTo(vertex[0]*scale, (13.5-vertex[1])*scale);
-    }
-    c2.lineTo(0, 0)
-    c2.closePath();
-    c2.fill();
-}
+//     for (i in params) {
+//         vertex = params[i]
+//         c2.lineTo(vertex[0]*scale, (13.5-vertex[1])*scale);
+//     }
+//     c2.lineTo(0, 0)
+//     c2.closePath();
+//     c2.fill();
+// }
 
-$(function () {
-    // hash = [Math.random(), Math.random(), Math.random(), Math.random(), Math.random(), Math.random(), Math.random()]
-    hash = undefined;
-    drawVase(hash);
-});
+// $(function () {
+//     // hash = [Math.random(), Math.random(), Math.random(), Math.random(), Math.random(), Math.random(), Math.random()]
+//     hash = undefined;
+//     drawVase(hash);
+// });

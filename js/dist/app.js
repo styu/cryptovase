@@ -70,7 +70,6 @@
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vaseify__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vaseify___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__vaseify__);
 
 
 var scene = new THREE.Scene();
@@ -96,9 +95,9 @@ scene.add(lights[0]);
 scene.add(lights[1]);
 scene.add(lights[2]);
 
-var vasePoints = Object(__WEBPACK_IMPORTED_MODULE_0__vaseify__["getVaseParams"])();
-var points = Object(__WEBPACK_IMPORTED_MODULE_0__vaseify__["getVaseParams"])().map(point => new THREE.Vector2(point[0], point[1]));
-points = points.concat(Object(__WEBPACK_IMPORTED_MODULE_0__vaseify__["getVaseParams"])().slice().reverse().map(point => new THREE.Vector2(point[0] - 0.35, point[1])));
+var vasePoints = Object(__WEBPACK_IMPORTED_MODULE_0__vaseify__["a" /* getVaseParams */])();
+var points = vasePoints.map(point => new THREE.Vector2(point[0], point[1]));
+points = points.concat(vasePoints.slice().reverse().map(point => new THREE.Vector2(point[0] - 0.35, point[1])));
 
 var phiLength = 0;
 var geometry = new THREE.LatheGeometry(points, 30, -Math.PI / 2, phiLength);
@@ -129,10 +128,10 @@ render();
 /***/ }),
 /* 1 */,
 /* 2 */
-/***/ (function(module, __webpack_exports__) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-getVaseParams = function (seed) {
+const getVaseParams = function (seed) {
     var seed = seed || [Math.random(), Math.random(), Math.random(), Math.random(), Math.random(), Math.random(), Math.random(), Math.random()];
     var features = {
         foot1: {
@@ -183,11 +182,11 @@ getVaseParams = function (seed) {
 
     var points = [];
     var prevFeature;
-    for (i in features) {
+    for (let i in features) {
         var heightVariance = 0;
         if (prevFeature) {
             // get difference between features
-            heightTolerance = features[i].coords[1] - features[prevFeature].coords[1];
+            let heightTolerance = features[i].coords[1] - features[prevFeature].coords[1];
             console.log(heightTolerance);
             heightVariance = heightTolerance * Math.random() / 2;
         }
@@ -197,32 +196,34 @@ getVaseParams = function (seed) {
 
     return points;
 };
+/* harmony export (immutable) */ __webpack_exports__["a"] = getVaseParams;
+
 
 // takes list of points and generates them
-drawVase = function (seed) {
+// drawVase = function (seed) {
 
-    var params = getVaseParams(seed);
-    var scale = 30;
+//     var params = getVaseParams(seed);
+//     var scale = 30;
 
-    var c2 = document.getElementById('c').getContext('2d');
-    c2.fillStyle = '#f00';
-    c2.beginPath();
-    c2.moveTo(0, params[params.length - 1][1] * scale);
+//     var c2 = document.getElementById('c').getContext('2d');
+//     c2.fillStyle = '#f00';
+//     c2.beginPath();
+//     c2.moveTo(0, params[(params.length-1)][1]*scale);
 
-    for (i in params) {
-        vertex = params[i];
-        c2.lineTo(vertex[0] * scale, (13.5 - vertex[1]) * scale);
-    }
-    c2.lineTo(0, 0);
-    c2.closePath();
-    c2.fill();
-};
+//     for (i in params) {
+//         vertex = params[i]
+//         c2.lineTo(vertex[0]*scale, (13.5-vertex[1])*scale);
+//     }
+//     c2.lineTo(0, 0)
+//     c2.closePath();
+//     c2.fill();
+// }
 
-$(function () {
-    // hash = [Math.random(), Math.random(), Math.random(), Math.random(), Math.random(), Math.random(), Math.random()]
-    hash = undefined;
-    drawVase(hash);
-});
+// $(function () {
+//     // hash = [Math.random(), Math.random(), Math.random(), Math.random(), Math.random(), Math.random(), Math.random()]
+//     hash = undefined;
+//     drawVase(hash);
+// });
 
 /***/ })
 /******/ ]);

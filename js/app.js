@@ -24,8 +24,8 @@ scene.add( lights[ 1 ] );
 scene.add( lights[ 2 ] );
 
 var vasePoints = getVaseParams();
-var points = getVaseParams().map(point => new THREE.Vector2(point[0], point[1]));
-points = points.concat(getVaseParams().slice().reverse().map(point => new THREE.Vector2(point[0] - 0.35, point[1])));
+var points = vasePoints.map(point => new THREE.Vector2(point[0], point[1]));
+points = points.concat(vasePoints.slice().reverse().map(point => new THREE.Vector2(point[0] - 0.35, point[1])));
 
 var phiLength = 0;
 var geometry = new THREE.LatheGeometry(
