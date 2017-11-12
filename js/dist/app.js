@@ -180,24 +180,24 @@ scene.add(lights[2]);
 
 var vasePoints = Object(__WEBPACK_IMPORTED_MODULE_0__vaseify__["a" /* getVaseParams */])();
 var points = vasePoints.map(point => new THREE.Vector2(point[0], point[1]));
-points = points.concat(vasePoints.slice().reverse().map(point => new THREE.Vector2(point[0] - 0.35, point[1])));
+// points = points.concat(vasePoints.slice().reverse().map(point => new THREE.Vector2(point[0] - 0.35, point[1])));
 
-var phiLength = 0;
+var phiLength = Math.PI / 10;
 var geometry = new THREE.LatheGeometry(points, 30, -Math.PI / 2, phiLength);
-phiLength += Math.PI / 30;
 
 var material = new THREE.MeshLambertMaterial({ color: 0x38a2f7 });
 var lathe = new THREE.Mesh(geometry, material);
-lathe.rotation.x += Math.PI / 4;
+lathe.rotation.x += Math.PI / 8;
 scene.add(lathe);
 var hasPaused = false;
 
 var render = function () {
-    if (phiLength < Math.PI * 2) {
+    if (phiLength <= Math.PI * 2) {
+        phiLength += Math.PI / 90;
         requestAnimationFrame(render);
-
+        lathe.rotation.x += Math.PI / 1500;
+        lathe.rotation.z -= Math.PI / 6000;
         geometry = new THREE.LatheBufferGeometry(points, 30, -Math.PI / 2, phiLength);
-        phiLength += Math.PI / 30;
         lathe.geometry.dispose();
 
         lathe.geometry = geometry;
@@ -206,7 +206,16 @@ var render = function () {
     }
 };
 
-render();
+renderer.render(scene, camera);
+setTimeout(function () {
+    // lathe.rotation.x += Math.PI / 8;
+    points = points.concat(vasePoints.slice().reverse().map(point => new THREE.Vector2(point[0] - 0.35, point[1])));
+    geometry = new THREE.LatheGeometry(points, 30, -Math.PI / 2, phiLength);
+    lathe.geometry.dispose();
+    lathe.geometry = geometry;
+    render();
+}, 500);
+// render();
 
 /***/ })
 /******/ ]);
