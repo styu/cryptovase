@@ -171,7 +171,7 @@ const getVaseParams = function (seed) {
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vaseify__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_threejs_export_stl_src__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_threejs_export_stl_src__ = __webpack_require__(3);
 
 
 
@@ -204,6 +204,28 @@ scene.add(lights[2]);
 
 var vasePoints = Object(__WEBPACK_IMPORTED_MODULE_0__vaseify__["a" /* getVaseParams */])();
 var points = vasePoints.map(point => new THREE.Vector2(point[0], point[1]));
+// ok what
+
+var drawVase = function (points) {
+    var scale = 20;
+    var firstCanvas = document.getElementsByTagName("canvas")[0];
+    var overlayCanvas = document.getElementById('overlay');
+    overlayCanvas.width = firstCanvas.width;
+    overlayCanvas.height = firstCanvas.height;
+    var c2 = overlayCanvas.getContext('2d');
+    c2.fillStyle = '#38a2f7';
+    c2.beginPath();
+    // c2.moveTo(0, params[(params.length-1)][1]*scale);
+
+    for (let i in points) {
+        let vertex = points[i];
+        c2.lineTo(firstCanvas.width / 4 - vertex[0] * scale, (12.3 - vertex[1]) * scale + 100);
+    }
+    // c2.lineTo(0, 0)
+    c2.closePath();
+    c2.fill();
+};
+
 // points = points.concat(vasePoints.slice().reverse().map(point => new THREE.Vector2(point[0] - 0.35, point[1])));
 
 var phiLength = Math.PI / 10;
@@ -277,18 +299,24 @@ var render = function () {
 };
 
 renderer.render(scene, camera);
+
+$(function () {
+    drawVase(vasePoints);
+    startRotate();
+});
+
 // scene.simulate();
-setTimeout(function () {
+var startRotate = function () {
     // lathe.rotation.x += Math.PI / 8;
     // points = points.concat(vasePoints.slice().reverse().map(point => new THREE.Vector2(point[0] - 0.35, point[1])));
     geometry = new THREE.LatheGeometry(points, 30, -Math.PI / 2, phiLength);
     lathe.geometry.dispose();
     lathe.geometry = geometry;
     render();
-}, 500);
+};
 // render();
 
-setTimeout(function () {
+var downloadVase = function () {
     let g = finalVase;
     g.type = "BufferGeometry";
     console.log(g);
@@ -299,12 +327,13 @@ setTimeout(function () {
     a.href = URL.createObjectURL(blob);
     a.download = "vase.stl";
     document.body.appendChild(a);
-    a.click();
+    // a.click();
     document.body.removeChild(a);
-}, 3500);
+};
 
 /***/ }),
-/* 2 */
+/* 2 */,
+/* 3 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";

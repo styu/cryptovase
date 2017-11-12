@@ -30,6 +30,28 @@ scene.add(lights[2]);
 
 var vasePoints = getVaseParams();
 var points = vasePoints.map(point => new THREE.Vector2(point[0], point[1]));
+// ok what
+
+var drawVase = function (points) {
+    var scale = 20;
+    var firstCanvas = document.getElementsByTagName("canvas")[0];
+    var overlayCanvas = document.getElementById('overlay');
+    overlayCanvas.width = firstCanvas.width;
+    overlayCanvas.height = firstCanvas.height;
+    var c2 = overlayCanvas.getContext('2d');
+    c2.fillStyle = '#38a2f7';
+    c2.beginPath();
+    // c2.moveTo(0, params[(params.length-1)][1]*scale);
+
+    for (let i in points) {
+        let vertex = points[i]
+        c2.lineTo(firstCanvas.width/4 - (vertex[0] * scale), (12.3 - vertex[1]) * scale + 100);
+    }
+    // c2.lineTo(0, 0)
+    c2.closePath();
+    c2.fill();
+}
+
 // points = points.concat(vasePoints.slice().reverse().map(point => new THREE.Vector2(point[0] - 0.35, point[1])));
 
 var phiLength = Math.PI / 10;
@@ -84,7 +106,7 @@ var render = function () {
         currentStep += 1;
     } else if (!hasSetGravity) {
         scene = new Physijs.Scene();
-        scene.setGravity(new THREE.Vector3( 0, -10, 0 ));
+        scene.setGravity(new THREE.Vector3(0, -10, 0));
         scene.add(lights[0]);
         scene.add(lights[1]);
         scene.add(lights[2]);
@@ -92,9 +114,9 @@ var render = function () {
         // scene.add( ground );
         scene.addEventListener(
             'update',
-            function() {
+            function () {
 
-                scene.simulate( undefined, 2 );
+                scene.simulate(undefined, 2);
             }
         );
         hasSetGravity = true;
@@ -108,8 +130,14 @@ var render = function () {
 };
 
 renderer.render(scene, camera);
+
+$(function() {
+    drawVase(vasePoints);
+    startRotate();
+})
+
 // scene.simulate();
-setTimeout(function () {
+var startRotate = function () {
     // lathe.rotation.x += Math.PI / 8;
     // points = points.concat(vasePoints.slice().reverse().map(point => new THREE.Vector2(point[0] - 0.35, point[1])));
     geometry = new THREE.LatheGeometry(
@@ -118,12 +146,12 @@ setTimeout(function () {
     lathe.geometry.dispose();
     lathe.geometry = geometry;
     render();
-}, 500);
+}
 // render();
 
-setTimeout(function () {
+var downloadVase = function() {
     let g = finalVase;
-    g.type="BufferGeometry"
+    g.type = "BufferGeometry"
     console.log(g);
     let data = exportSTL.fromGeometry(g);
     console.log(data);
@@ -132,6 +160,6 @@ setTimeout(function () {
     a.href = URL.createObjectURL(blob);
     a.download = "vase.stl";
     document.body.appendChild(a);
-    a.click();
+    // a.click();
     document.body.removeChild(a);
-}, 3500);
+}
