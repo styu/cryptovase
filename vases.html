@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset=utf-8>
+    <style>
+        body {
+            margin: 0;
+        }
+
+        #overlay {
+            position: fixed;
+            top: 90px;
+            left: 50%;
+            margin-left: -400px;
+            z-index: 10000;
+        }
+
+        #vaseWindow {
+            margin: 90px auto;
+            width: 800px;
+            height: 600px;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.4);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .title {
+            position: absolute;
+            width: 100%;
+            top: 10px;
+            font-size: 30px;
+            font-family: 'Avenir';
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .caption {
+            position: absolute;
+            width: 100%;
+            top: 50px;
+            font-size: 16px;
+            font-family: 'Avenir';
+            text-align: center;
+            color: #999;
+        }
+
+        .go {
+            position: absolute;
+            width: 100%;
+            top: 100px;
+            z-index: 10001;
+            font-size: 16px;
+            font-family: 'Avenir';
+            text-align: center;
+            color: #666;
+        }
+
+        .info {
+            position: absolute;
+            width: 500px;
+            left: 50%;
+            margin-left: -250px;
+            top: 440px;
+            z-index: 10001;
+            font-size: 16px;
+            font-family: 'Avenir';
+            text-align: center;
+            color: #999;
+        }
+
+        input,
+        button {
+            font-size: 20px;
+        }
+
+        button {
+            border: 1px solid #ccc;
+            background-color: #eee;
+            color: #333;
+        }
+
+        button:hover {
+            border: 1px solid #bbb;
+            background-color: #ccc;
+            cursor: pointer;
+        }
+
+        input {
+            width: 400px;
+        }
+
+        canvas {
+            position: absolute;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="title">BitVase!</div>
+    <div class="caption">By Team Parsnip. Built for Hacking Arts 2017 :)</div>
+    <div id="vaseWindow">
+        <button id="start">drop vases</button>
+    </div>
+    <script src="js/sha256.min.js"></script>
+    <script src="js/three.js"></script>
+    <script src="js/jquery.min.js"></script>
+    <script src="js/lodash.min.js"></script>
+    <script src="js/physi.js"></script>
+    <script src="js/dist/falling.vase.demo.js"></script>
+    <script src="js/dist/coin_adapter.js"></script>
+</body>
+
+</html>
