@@ -65,16 +65,22 @@
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ (function(module, exports) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vaseify__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vaseify___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__vaseify__);
+
 
 var scene = new THREE.Scene();
 var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 50);
-camera.position.z = 30;
+camera.position.z = 25;
 
 var renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.setClearColor(0x000000, 1);
+renderer.setClearColor(0xffffff, 1);
 document.body.appendChild(renderer.domElement);
 
 var lights = [];
@@ -90,61 +96,25 @@ scene.add(lights[0]);
 scene.add(lights[1]);
 scene.add(lights[2]);
 
-// var mesh = new THREE.Object3D();
-
-// mesh.add( new THREE.LineSegments(
-
-//     new THREE.Geometry(),
-
-//     new THREE.LineBasicMaterial( {
-//         color: 0xffffff,
-//         transparent: true,
-//         opacity: 0.5
-//     } )
-
-// ) );
-
-// mesh.add( new THREE.Mesh(
-
-//     new THREE.Geometry(),
-
-//     new THREE.MeshPhongMaterial( {
-//         color: 0x156289,
-//         emissive: 0x072534,
-//         side: THREE.DoubleSide,
-//         flatShading: true
-//     } )
-
-// ) );
-
-// var options = new THREE.MeshBasicMaterial({color: 0x2194CE});
-
-// scene.add( mesh );
-
-// var prevFog = false;
-
-var points = [];
-
-for (var i = 9; i >= 0; i--) {
-    points.push(new THREE.Vector2(Math.sin(i * 0.2) * 10 + 5 - 1, (i - 5) * 2));
-}
-for (var i = 0; i < 10; i++) {
-    points.push(new THREE.Vector2(Math.sin(i * 0.2) * 10 + 5, (i - 5) * 2));
-}
+var vasePoints = Object(__WEBPACK_IMPORTED_MODULE_0__vaseify__["getVaseParams"])();
+var points = Object(__WEBPACK_IMPORTED_MODULE_0__vaseify__["getVaseParams"])().map(point => new THREE.Vector2(point[0], point[1]));
+points = points.concat(Object(__WEBPACK_IMPORTED_MODULE_0__vaseify__["getVaseParams"])().slice().reverse().map(point => new THREE.Vector2(point[0] - 0.35, point[1])));
 
 var phiLength = 0;
-var geometry = new THREE.LatheGeometry(points, 30, 0, phiLength);
+var geometry = new THREE.LatheGeometry(points, 30, -Math.PI / 2, phiLength);
 phiLength += Math.PI / 30;
 
-var material = new THREE.MeshLambertMaterial({ color: 0xffff00 });
+var material = new THREE.MeshLambertMaterial({ color: 0x38a2f7 });
 var lathe = new THREE.Mesh(geometry, material);
-// lathe.rotation.x += Math.PI / 3;
+lathe.rotation.x += Math.PI / 4;
 scene.add(lathe);
+var hasPaused = false;
 
 var render = function () {
     if (phiLength < Math.PI * 2) {
         requestAnimationFrame(render);
-        geometry = new THREE.LatheBufferGeometry(points, 30, 0, phiLength);
+
+        geometry = new THREE.LatheBufferGeometry(points, 30, -Math.PI / 2, phiLength);
         phiLength += Math.PI / 30;
         lathe.geometry.dispose();
 
@@ -155,6 +125,104 @@ var render = function () {
 };
 
 render();
+
+/***/ }),
+/* 1 */,
+/* 2 */
+/***/ (function(module, __webpack_exports__) {
+
+"use strict";
+getVaseParams = function (seed) {
+    var seed = seed || [Math.random(), Math.random(), Math.random(), Math.random(), Math.random(), Math.random(), Math.random(), Math.random()];
+    var features = {
+        foot1: {
+            coords: [2, 0],
+            hashId: 0
+        },
+        foot2: {
+            coords: [1.5, 1],
+            hashId: 0
+        },
+        foot3: {
+            coords: [1.5, 1.5],
+            hashId: 0
+        },
+        body1: {
+            coords: [2.5, 3],
+            hashId: 1
+        },
+        body2: {
+            coords: [3, 6],
+            hashId: 2
+        },
+        body3: {
+            coords: [2.7, 8],
+            hashId: 3
+        },
+        shoulder1: {
+            coords: [1.5, 10],
+            hashId: 4
+        },
+        neck1: {
+            coords: [1.5, 10.5],
+            hashId: 5
+        },
+        neck2: {
+            coords: [1.5, 11],
+            hashId: 6
+        },
+        mouth1: {
+            coords: [2.5, 13],
+            hashId: 7
+        },
+        mouth2: {
+            coords: [2.5, 13.5],
+            hashId: 7
+        }
+    };
+
+    var points = [];
+    var prevFeature;
+    for (i in features) {
+        var heightVariance = 0;
+        if (prevFeature) {
+            // get difference between features
+            heightTolerance = features[i].coords[1] - features[prevFeature].coords[1];
+            console.log(heightTolerance);
+            heightVariance = heightTolerance * Math.random() / 2;
+        }
+        points.push([features[i].coords[0] + seed[features[i].hashId], features[i].coords[1] - heightVariance]);
+        prevFeature = i;
+    }
+
+    return points;
+};
+
+// takes list of points and generates them
+drawVase = function (seed) {
+
+    var params = getVaseParams(seed);
+    var scale = 30;
+
+    var c2 = document.getElementById('c').getContext('2d');
+    c2.fillStyle = '#f00';
+    c2.beginPath();
+    c2.moveTo(0, params[params.length - 1][1] * scale);
+
+    for (i in params) {
+        vertex = params[i];
+        c2.lineTo(vertex[0] * scale, (13.5 - vertex[1]) * scale);
+    }
+    c2.lineTo(0, 0);
+    c2.closePath();
+    c2.fill();
+};
+
+$(function () {
+    // hash = [Math.random(), Math.random(), Math.random(), Math.random(), Math.random(), Math.random(), Math.random()]
+    hash = undefined;
+    drawVase(hash);
+});
 
 /***/ })
 /******/ ]);

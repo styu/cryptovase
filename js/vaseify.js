@@ -69,7 +69,7 @@ drawVase = function (seed) {
 
     var params = getVaseParams(seed);
     var scale = 30;
-    
+
     var c2 = document.getElementById('c').getContext('2d');
     c2.fillStyle = '#f00';
     c2.beginPath();
