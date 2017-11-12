@@ -1,6 +1,3 @@
-// document.getElementById( 'newWindow' ).href += window.location.hash;
-
-// var gui = new dat.GUI();
 var scene = new THREE.Scene();
 var camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 50 );
 camera.position.z = 30;
@@ -10,9 +7,6 @@ renderer.setPixelRatio( window.devicePixelRatio );
 renderer.setSize( window.innerWidth, window.innerHeight );
 renderer.setClearColor( 0x000000, 1 );
 document.body.appendChild( renderer.domElement );
-
-// var orbit = new THREE.OrbitControls( camera, renderer.domElement );
-// orbit.enableZoom = false;
 
 var lights = [];
 lights[ 0 ] = new THREE.PointLight( 0xffffff, 1, 0 );
@@ -27,56 +21,74 @@ scene.add( lights[ 0 ] );
 scene.add( lights[ 1 ] );
 scene.add( lights[ 2 ] );
 
-var mesh = new THREE.Object3D();
+// var mesh = new THREE.Object3D();
 
-mesh.add( new THREE.LineSegments(
+// mesh.add( new THREE.LineSegments(
 
-    new THREE.Geometry(),
+//     new THREE.Geometry(),
 
-    new THREE.LineBasicMaterial( {
-        color: 0xffffff,
-        transparent: true,
-        opacity: 0.5
-    } )
+//     new THREE.LineBasicMaterial( {
+//         color: 0xffffff,
+//         transparent: true,
+//         opacity: 0.5
+//     } )
 
-) );
+// ) );
 
-mesh.add( new THREE.Mesh(
+// mesh.add( new THREE.Mesh(
 
-    new THREE.Geometry(),
+//     new THREE.Geometry(),
 
-    new THREE.MeshPhongMaterial( {
-        color: 0x156289,
-        emissive: 0x072534,
-        side: THREE.DoubleSide,
-        flatShading: true
-    } )
+//     new THREE.MeshPhongMaterial( {
+//         color: 0x156289,
+//         emissive: 0x072534,
+//         side: THREE.DoubleSide,
+//         flatShading: true
+//     } )
 
-) );
+// ) );
 
-var options = new THREE.MeshBasicMaterial({color: 0x2194CE});
+// var options = new THREE.MeshBasicMaterial({color: 0x2194CE});
 
-scene.add( mesh );
+// scene.add( mesh );
 
-var prevFog = false;
+// var prevFog = false;
+
+var points = [];
+
+for ( var i = 9; i >= 0; i -- ) {
+    points.push( new THREE.Vector2( Math.sin( i * 0.2 ) * 10 + 5 - 1, ( i - 5 ) * 2 ) );
+}
+for ( var i = 0; i < 10; i ++ ) {
+    points.push( new THREE.Vector2( Math.sin( i * 0.2 ) * 10 + 5, ( i - 5 ) * 2 ) );
+}
+
+var phiLength = 0;
+var geometry = new THREE.LatheGeometry(
+    points, 30, 0, phiLength
+);
+phiLength += Math.PI / 30;
+
+var material = new THREE.MeshLambertMaterial( { color: 0xffff00 } );
+var lathe = new THREE.Mesh( geometry, material );
+// lathe.rotation.x += Math.PI / 3;
+scene.add( lathe );
 
 var render = function () {
-    requestAnimationFrame( render );
+    if (phiLength < Math.PI * 2) {
+        requestAnimationFrame( render );
+        geometry = new THREE.LatheBufferGeometry(
+            points, 30, 0, phiLength
+        );
+        phiLength += Math.PI / 30;
+        lathe.geometry.dispose();
 
-    mesh.rotation.x += 0.005;
-    mesh.rotation.y += 0.005;
+        lathe.geometry = geometry;
 
-    renderer.render( scene, camera );
+        renderer.render( scene, camera );
+    }
 };
 
-window.addEventListener( 'resize', function () {
-
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-
-    renderer.setSize( window.innerWidth, window.innerHeight );
-
-}, false );
 
 render();
 
