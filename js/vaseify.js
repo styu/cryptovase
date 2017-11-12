@@ -56,7 +56,6 @@ export const getVaseParams = function (seed) {
         if (prevFeature) {
             // get difference between features
             let heightTolerance = features[i].coords[1] - features[prevFeature].coords[1];
-            console.log(heightTolerance);
             heightVariance = heightTolerance * Math.random() / 2
         }
 

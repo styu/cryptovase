@@ -29,23 +29,42 @@ scene.add(lights[0]);
 scene.add(lights[1]);
 scene.add(lights[2]);
 
+var setOfVasePoints = [];
 var vasePoints = getVaseParams();
 var points = vasePoints.map(point => new THREE.Vector2(point[0], point[1]));
 const lowest = Math.min(...vasePoints.map(point => point[1]));
 const highest = Math.max(...vasePoints.map(point => point[1]));
+
+// push a lot of points wheee
+setOfVasePoints.push(vasePoints);
+setOfVasePoints.push(getVaseParams());
+setOfVasePoints.push(getVaseParams());
+setOfVasePoints.push(getVaseParams());
+setOfVasePoints.push(getVaseParams());
 
 // scaling for canvas frame I'm going to lose this
 var canvasVaseScale = 18;
 var vaseColor = "#38a2f7"
 
 /// shhhhh
-
+var newStartX = [];
+var startX;
 var theFinalVasePoints = [];
 var fadeOutVase = function () {
     $('#overlay').fadeOut(1000);
     startRotate();
 }
-var drawAlmostVase = function (c2, points, step, totalSteps, norun) {
+var drawAlmostVase = function (c2, points, step, totalSteps, norun, startX) {
+    if (startX) {
+        startX = startX; //what
+    } else {
+        startX = [];
+        for (var i = 0; i < 26; i++) {
+            startX.push(120);
+            newStartX.push(120);
+        }
+    }
+    console.log(newStartX);
 
     c2.clearRect(0, 0, c2.canvas.width, c2.canvas.height);
 
@@ -53,7 +72,7 @@ var drawAlmostVase = function (c2, points, step, totalSteps, norun) {
         step += 5;
         if (!norun) {
             setTimeout(function () {
-                drawAlmostVase(c2, points, step, totalSteps);
+                drawAlmostVase(c2, points, step, totalSteps, false, newStartX);
             }, 30);
         }
         c2.fillStyle = "#ffffff";
@@ -61,12 +80,26 @@ var drawAlmostVase = function (c2, points, step, totalSteps, norun) {
         c2.fill();
 
     } else {
-        fadeOutVase();
+        if (numVasesLeft > 0) {
+            c2.fillStyle = "#ffffff";
+            c2.rect(0, 0, c2.canvas.width, c2.canvas.height);
+            c2.fill();
+            numVasesLeft--;
+            // GETTING NEW VASE PARAMS might want to use stored ones
+            let vp = setOfVasePoints[numVasesLeft]
+
+            drawAlmostVase(c2, vp, 0, totalSteps, false, newStartX);
+
+            // PLAY ME AGAIN
+        } else {
+            fadeOutVase();
+        }
     }
 
     c2.fillStyle = vaseColor;
     c2.beginPath();
     // c2.moveTo(0, params[(params.length-1)][1]*scale);
+
 
     var oneSide = [];
     //for (let i in points) {
@@ -74,13 +107,19 @@ var drawAlmostVase = function (c2, points, step, totalSteps, norun) {
 
     for (var i = 0; i < 11; i++) {
         let vertex = points[i]
-        console.log(c2)
         let finalX = (vertex[0] * canvasVaseScale)
-        let x = c2.canvas.width / 2 - (100 - (100 - finalX) * (bezier(step / totalSteps)))
+        let vaseX = (startX[i] - (startX[i] - finalX) * (bezier(step / totalSteps)))
+        let x = c2.canvas.width / 2 - vaseX
         oneSide.push(x);
         let y = (12.3 - vertex[1]) * canvasVaseScale + 80
         c2.lineTo(x, y);
         theFinalVasePoints.push([x, y])
+        console.log(step, totalSteps);
+        if ((step + 5) == totalSteps) {
+            console.log('CREATING NEW ENDPOINT')
+            if (i == 0) newStartX = [];
+            newStartX.push(vaseX);
+        }
     }
     for (var i = 11; i < 22; i++) {
         let vertex = points[i]
@@ -88,11 +127,12 @@ var drawAlmostVase = function (c2, points, step, totalSteps, norun) {
         let y = (12.3 - vertex[1]) * canvasVaseScale + 80
         c2.lineTo(x, y);
         theFinalVasePoints.push([x, y])
+        if ((step + 5) == totalSteps)
+            newStartX.push(x);
     }
 
     for (var i = 22; i < points.length; i++) {
         let vertex = points[i]
-        console.log(c2)
         let finalX = (vertex[0] * canvasVaseScale)
         let x = c2.canvas.width / 2
         let y = (12.3 - vertex[1]) * canvasVaseScale + 80
@@ -117,9 +157,8 @@ var drawAlmostVase = function (c2, points, step, totalSteps, norun) {
     //for (let i in points) {
     for (var i = 0; i < 11; i++) {
         let vertex = points[i]
-        console.log(c2)
         let finalX = (vertex[0] * canvasVaseScale)
-        let x = c2.canvas.width / 2 + (100 - (100 - finalX) * (bezier(step / totalSteps)))
+        let x = c2.canvas.width / 2 + (startX[i] - (startX[i] - finalX) * (bezier(step / totalSteps)))
         oneSide.push(x);
         let y = (12.3 - vertex[1]) * canvasVaseScale + 80
         c2.lineTo(x, y);
@@ -133,7 +172,6 @@ var drawAlmostVase = function (c2, points, step, totalSteps, norun) {
 
     for (var i = 22; i < points.length; i++) {
         let vertex = points[i]
-        console.log(c2)
         let finalX = (vertex[0] * canvasVaseScale)
         let x = c2.canvas.width / 2
         let y = (12.3 - vertex[1]) * canvasVaseScale + 80
@@ -235,12 +273,12 @@ var bezier = function (t) { return t < .5 ? 4 * t * t * t : (t - 1) * (2 * t - 2
 var hasSetGravity = false;
 var render = function () {
 
-    if (stepsBeforeSwingingThreshold < currentStep ) {
+    if (stepsBeforeSwingingThreshold < currentStep) {
         lathe.rotation.y -= Math.PI / 500;
     }
     lathe.rotation.x += Math.PI / 1200;
 
-    if (stepsBeforeSwingingThreshold >= currentStep ) {
+    if (stepsBeforeSwingingThreshold >= currentStep) {
         lathe.rotation.z -= Math.PI / 4000;
     }
 
@@ -280,6 +318,8 @@ var render = function () {
 // renderer.render(scene, camera);
 
 var c2;
+var numVasesLeft = 3;
+
 $(function () {
     var firstCanvas = document.getElementsByTagName("canvas")[0];
     var overlayCanvas = document.getElementById('overlay');
@@ -292,8 +332,7 @@ $(function () {
 })
 
 $(document).on('click', '.btn', function () {
-
-    drawAlmostVase(c2, vasePoints, 0, 300);
+    drawAlmostVase(c2, setOfVasePoints[4], 0, 80);
 })
 
 var startRotate = function () {
@@ -308,9 +347,7 @@ var startRotate = function () {
 var downloadVase = function () {
     let g = finalVase;
     g.type = "BufferGeometry"
-    console.log(g);
     let data = exportSTL.fromGeometry(g);
-    console.log(data);
     const blob = new Blob([data], { type: exportSTL.mimeType });
     var a = document.createElement("a");
     a.href = URL.createObjectURL(blob);

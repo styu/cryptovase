@@ -24,6 +24,6 @@ export const drawVase = function (seed) {
 
 $(function () {
     // hash = [Math.random(), Math.random(), Math.random(), Math.random(), Math.random(), Math.random(), Math.random()]
-    let hash = undefined;
-    drawVase(hash);
+    // let hash = undefined;
+    // drawVase(hash);
 });

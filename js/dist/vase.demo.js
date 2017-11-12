@@ -126,7 +126,6 @@ const getVaseParams = function (seed) {
         if (prevFeature) {
             // get difference between features
             let heightTolerance = features[i].coords[1] - features[prevFeature].coords[1];
-            console.log(heightTolerance);
             heightVariance = heightTolerance * Math.random() / 2;
         }
 
@@ -200,8 +199,8 @@ const drawVase = function (seed) {
 
 $(function () {
     // hash = [Math.random(), Math.random(), Math.random(), Math.random(), Math.random(), Math.random(), Math.random()]
-    let hash = undefined;
-    drawVase(hash);
+    // let hash = undefined;
+    // drawVase(hash);
 });
 
 /***/ })
