@@ -60,8 +60,8 @@ var drawAlmostVase = function (c2, points, step, totalSteps, norun, startX) {
     } else {
         startX = [];
         for (var i = 0; i < 26; i++) {
-            startX.push(120);
-            newStartX.push(120);
+            startX.push(70);
+            newStartX.push(70);
         }
     }
     console.log(newStartX);
