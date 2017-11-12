@@ -173,7 +173,11 @@ const getVaseParams = function (seed) {
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vaseify__ = __webpack_require__(0);
+<<<<<<< HEAD
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_threejs_export_stl_src__ = __webpack_require__(4);
+=======
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_threejs_export_stl_src__ = __webpack_require__(2);
+>>>>>>> Proper bouncy ground
 
 
 
@@ -181,7 +185,6 @@ Physijs.scripts.worker = './js/physijs_worker.js';
 Physijs.scripts.ammo = './ammo.js';
 
 var scene = new THREE.Scene();
-// scene.setGravity(new THREE.Vector3( 0, 0, 0 ));
 const scale = 2;
 const width = 400 * scale;
 const height = 300 * scale;
@@ -189,7 +192,6 @@ var camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 50);
 camera.position.z = 25;
 
 var renderer = new THREE.WebGLRenderer({ antialias: true });
-// renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setSize(width, height);
 renderer.setClearColor(0xffffff, 1);
 document.getElementById('vaseWindow').appendChild(renderer.domElement);
@@ -211,7 +213,6 @@ var vasePoints = Object(__WEBPACK_IMPORTED_MODULE_0__vaseify__["a" /* getVasePar
 var points = vasePoints.map(point => new THREE.Vector2(point[0], point[1]));
 const lowest = Math.min(...vasePoints.map(point => point[1]));
 const highest = Math.max(...vasePoints.map(point => point[1]));
-// ok what
 
 var drawVase = function (points) {
     var scale = 18;
@@ -222,38 +223,32 @@ var drawVase = function (points) {
     var c2 = overlayCanvas.getContext('2d');
     c2.fillStyle = '#38a2f7';
     c2.beginPath();
-    // c2.moveTo(0, params[(params.length-1)][1]*scale);
 
     for (let i in points) {
         let vertex = points[i];
         c2.lineTo(firstCanvas.width / 2 - vertex[0] * scale, (12.3 - vertex[1]) * scale + 80);
     }
-    // c2.lineTo(0, 0)
     c2.closePath();
     c2.fill();
 };
 
-// points = points.concat(vasePoints.slice().reverse().map(point => new THREE.Vector2(point[0] - 0.35, point[1])));
-
 var phiLength = Math.PI / 10;
 var geometry = new THREE.LatheGeometry(points, 30, -Math.PI / 2, phiLength);
 
-var material = new THREE.MeshLambertMaterial({ color: 0x38a2f7 });
+var material = Physijs.createMaterial(new THREE.MeshLambertMaterial({ color: 0x38a2f7 }), .6, // medium friction
+.2 // low restitution
+);
 var lathe = new Physijs.BoxMesh(geometry, material);
 lathe.rotation.x += Math.PI / 8;
+var collided = false;
 scene.add(lathe);
 
-var geometry = new THREE.BoxGeometry(30, 1, 30);
-var material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-const groundMaterial = Physijs.createMaterial(material, 0.8, 0.3);
-// var groundMaterial = Physijs.createMaterial(
-//     new THREE.MeshLambertMaterial({ color: 0x795548 }),
-//     0.8,
-//     0.3,
-// );
+var geometry = new THREE.BoxGeometry(100, 1, 100);
+const groundMaterial = Physijs.createMaterial(new THREE.MeshBasicMaterial({ color: 0x795548 }), 0.8, 0.3);
 let ground = new Physijs.BoxMesh(geometry, groundMaterial, 0 // mass
 );
-ground.rotation.x += Math.PI / 8;
+ground.rotation.x += Math.PI / 10;
+ground.position.y -= 20;
 ground.receiveShadow = true;
 scene.add(ground);
 
@@ -271,8 +266,10 @@ var bezier = function (t) {
 
 var hasSetGravity = false;
 var render = function () {
-    lathe.rotation.x += Math.PI / 1500;
-    lathe.rotation.z -= Math.PI / 6000;
+    if (!collided) {
+        lathe.rotation.x += Math.PI / 1500;
+        lathe.rotation.z -= Math.PI / 6000;
+    }
 
     requestAnimationFrame(render);
     if (currentStep <= totalSteps) {
@@ -292,18 +289,13 @@ var render = function () {
         scene.add(lights[2]);
         scene.add(lathe);
         scene.add(ground);
-        scene.addEventListener('update', function () {
-
-            scene.simulate(undefined, 2);
-        });
         hasSetGravity = true;
     }
     renderer.render(scene, camera);
 
-    if (hasSetGravity) {
+    if (hasSetGravity && !collided) {
         scene.simulate();
     }
-    // scene.simulate();
 };
 
 renderer.render(scene, camera);
@@ -313,16 +305,12 @@ $(function () {
     startRotate();
 });
 
-// scene.simulate();
 var startRotate = function () {
-    // lathe.rotation.x += Math.PI / 8;
-    // points = points.concat(vasePoints.slice().reverse().map(point => new THREE.Vector2(point[0] - 0.35, point[1])));
     geometry = new THREE.LatheGeometry(points, 30, -Math.PI / 2, phiLength);
     lathe.geometry.dispose();
     lathe.geometry = geometry;
     render();
 };
-// render();
 
 var downloadVase = function () {
     let g = finalVase;
@@ -340,7 +328,11 @@ var downloadVase = function () {
 };
 
 /***/ }),
+<<<<<<< HEAD
 /* 4 */
+=======
+/* 2 */
+>>>>>>> Proper bouncy ground
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
