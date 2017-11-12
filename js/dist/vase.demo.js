@@ -120,6 +120,7 @@ const getVaseParams = function (seed) {
 
     var points = [];
     var prevFeature;
+
     for (let i in features) {
         var heightVariance = 0;
         if (prevFeature) {
@@ -138,8 +139,24 @@ const getVaseParams = function (seed) {
         var x = features[i].coords[0] + seed[features[i].hashId] + (offset - 0.5) * 3 + seed[8] * seed[8];
 
         points.push([x, y]);
+
         prevFeature = i;
     }
+
+    var innerShell = [];
+    for (let i in points) {
+        let x = points[points.length - i - 1][0] - 0.3;
+        let y = points[points.length - i - 1][1];
+        if (i == points.length - 1) {
+            innerShell.push([x - 0.5, y + 0.3]);
+            innerShell.push([0, y + 0.3]);
+            innerShell.push([0, y]);
+        } else {
+            innerShell.push([x, y]);
+        }
+    }
+
+    points = points.concat(innerShell);
 
     return points;
 };
@@ -169,7 +186,7 @@ const drawVase = function (seed) {
 
     for (let i in params) {
         const vertex = params[i];
-        c2.lineTo(vertex[0] * scale, (13.5 - vertex[1]) * scale);
+        c2.lineTo(vertex[0] * scale, (12.3 - vertex[1]) * scale);
     }
     // c2.lineTo(0, 0)
     c2.closePath();
