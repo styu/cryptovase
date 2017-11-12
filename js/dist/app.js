@@ -155,6 +155,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vaseify__ = __webpack_require__(0);
 
 
+Physijs.scripts.worker = './physijs_worker.js';
+Physijs.scripts.ammo = './ammo.js';
+
 var scene = new THREE.Scene();
 var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 50);
 camera.position.z = 25;

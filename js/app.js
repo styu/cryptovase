@@ -1,5 +1,8 @@
 import { getVaseParams } from "./vaseify";
 
+Physijs.scripts.worker = './physijs_worker.js';
+Physijs.scripts.ammo = './ammo.js';
+
 var scene = new THREE.Scene();
 var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 50);
 camera.position.z = 25;
