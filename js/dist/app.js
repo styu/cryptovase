@@ -109,11 +109,11 @@ const getVaseParams = function (seed) {
             hashId: 6
         },
         mouth1: {
-            coords: [2, 12],
+            coords: [1.5, 12],
             hashId: 7
         },
         mouth2: {
-            coords: [2, 12.3],
+            coords: [1.5, 12.3],
             hashId: 7
         }
     };
@@ -151,6 +151,7 @@ const getVaseParams = function (seed) {
             innerShell.push([x - 0.5, y + 0.3]);
             innerShell.push([0, y + 0.3]);
             innerShell.push([0, y]);
+            innerShell.push(points[0]);
         } else {
             innerShell.push([x, y]);
         }
@@ -276,7 +277,7 @@ setTimeout(function () {
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
-}, 3000);
+}, 3500);
 
 /***/ }),
 /* 2 */,

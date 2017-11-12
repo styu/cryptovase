@@ -107,4 +107,4 @@ setTimeout(function () {
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
-}, 3000);
+}, 3500);
