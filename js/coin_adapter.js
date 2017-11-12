@@ -30,4 +30,4 @@ var getBlock = function (blockNum, callback) {
     });
 }
 
-getBlock(500, console.log);
+//getBlock(500, console.log);
