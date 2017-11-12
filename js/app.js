@@ -175,25 +175,38 @@ var material = Physijs.createMaterial(
 );
 var lathe = new Physijs.BoxMesh(geometry, material);
 lathe.rotation.x += Math.PI / 8;
-var collided = false;
 scene.add(lathe);
 
+// var groundGeometry = new THREE.BoxGeometry( 100, 1, 100 );
+// const groundMaterial = Physijs.createMaterial(
+//     new THREE.MeshBasicMaterial( {color: 0x795548} ),
+//     0.8,
+//     0.3,
+// );
+// let ground = new Physijs.BoxMesh(
+//     groundGeometry,
+//     groundMaterial,
+//     0 // mass
+// );
+// ground.rotation.x += Math.PI / 10;
+// ground.position.y -= 20;
+// ground.receiveShadow = true;
+// scene.add( ground );
 
-var geometry = new THREE.BoxGeometry( 100, 1, 100 );
-const groundMaterial = Physijs.createMaterial(
-    new THREE.MeshBasicMaterial( {color: 0x795548} ),
-    0.8,
-    0.3,
-);
-let ground = new Physijs.BoxMesh(
-    geometry,
-    groundMaterial,
-    0 // mass
-);
-ground.rotation.x += Math.PI / 10;
-ground.position.y -= 20;
-ground.receiveShadow = true;
-scene.add( ground );
+// var groundFrontGeometry = new THREE.BoxGeometry(100, 20, 1);
+// const groundFrontMaterial = Physijs.createMaterial(
+//     new THREE.MeshBasicMaterial( {color: 0x000000} ),
+//     0.8,
+//     0.3,
+// );
+// let groundFront = new Physijs.BoxMesh(
+//     groundFrontGeometry,
+//     groundFrontMaterial,
+//     0,
+// );
+// groundFront.rotation.x += Math.PI / 2;
+// groundFront.receiveShadow = true;
+// scene.add(groundFront)
 
 var hasPaused = false;
 
@@ -207,10 +220,8 @@ var bezier = function (t) { return t < .5 ? 4 * t * t * t : (t - 1) * (2 * t - 2
 
 var hasSetGravity = false;
 var render = function () {
-    if (!collided) {
-        lathe.rotation.x += Math.PI / 1500;
-        lathe.rotation.z -= Math.PI / 6000;
-    }
+    lathe.rotation.x += Math.PI / 1500;
+    lathe.rotation.z -= Math.PI / 6000;
 
     requestAnimationFrame(render);
     if (currentStep <= totalSteps) {
@@ -231,12 +242,16 @@ var render = function () {
         scene.add(lights[1]);
         scene.add(lights[2]);
         scene.add(lathe);
-        scene.add( ground );
+        // scene.add( ground );
+        // scene.add(groundFront);
         hasSetGravity = true;
     }
     renderer.render(scene, camera);
 
-    if (hasSetGravity && !collided) {
+    if (currentStep === totalSteps) {
+        downloadVase();
+    }
+    if (hasSetGravity) {
         scene.simulate();
     }
 };
@@ -273,6 +288,6 @@ var downloadVase = function () {
     a.href = URL.createObjectURL(blob);
     a.download = "vase.stl";
     document.body.appendChild(a);
-    // a.click();
+    a.click();
     document.body.removeChild(a);
 }
