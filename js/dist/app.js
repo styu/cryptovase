@@ -171,14 +171,14 @@ const getVaseParams = function (seed) {
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vaseify__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_threejs_export_stl__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_threejs_export_stl_src__ = __webpack_require__(2);
 
 
 
 Physijs.scripts.worker = './js/physijs_worker.js';
 Physijs.scripts.ammo = './ammo.js';
 
-var scene = new Physijs.Scene();
+var scene = new THREE.Scene();
 // scene.setGravity(new THREE.Vector3( 0, 0, 0 ));
 var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 50);
 camera.position.z = 25;
@@ -213,6 +213,20 @@ var material = new THREE.MeshLambertMaterial({ color: 0x38a2f7 });
 var lathe = new Physijs.BoxMesh(geometry, material);
 lathe.rotation.x += Math.PI / 8;
 scene.add(lathe);
+
+// var groundMaterial = Physijs.createMaterial(
+//     new THREE.MeshLambertMaterial({ color: 0x795548 }),
+//     0.8,
+//     0.3,
+// );
+// let ground = new Physijs.BoxMesh(
+//     new THREE.BoxGeometry(100, 1, 100),
+//     groundMaterial,
+//     0 // mass
+// );
+// ground.receiveShadow = true;
+// scene.add( ground );
+
 var hasPaused = false;
 
 var finalVase;
@@ -226,13 +240,6 @@ var bezier = function (t) {
 };
 
 var hasSetGravity = false;
-// scene.addEventListener(
-//     'update',
-//     function() {
-
-//         scene.simulate( undefined, 2 );
-//     }
-// );
 var render = function () {
     lathe.rotation.x += Math.PI / 1500;
     lathe.rotation.z -= Math.PI / 6000;
@@ -247,8 +254,25 @@ var render = function () {
         lathe.geometry = geometry;
         finalVase = geometry;
         currentStep += 1;
+    } else if (!hasSetGravity) {
+        scene = new Physijs.Scene();
+        scene.setGravity(new THREE.Vector3(0, -10, 0));
+        scene.add(lights[0]);
+        scene.add(lights[1]);
+        scene.add(lights[2]);
+        scene.add(lathe);
+        // scene.add( ground );
+        scene.addEventListener('update', function () {
+
+            scene.simulate(undefined, 2);
+        });
+        hasSetGravity = true;
     }
     renderer.render(scene, camera);
+
+    if (hasSetGravity) {
+        scene.simulate();
+    }
     // scene.simulate();
 };
 
@@ -268,9 +292,9 @@ setTimeout(function () {
     let g = finalVase;
     g.type = "BufferGeometry";
     console.log(g);
-    let data = __WEBPACK_IMPORTED_MODULE_1_threejs_export_stl__["a" /* fromGeometry */](g);
+    let data = __WEBPACK_IMPORTED_MODULE_1__node_modules_threejs_export_stl_src__["a" /* fromGeometry */](g);
     console.log(data);
-    const blob = new Blob([data], { type: __WEBPACK_IMPORTED_MODULE_1_threejs_export_stl__["b" /* mimeType */] });
+    const blob = new Blob([data], { type: __WEBPACK_IMPORTED_MODULE_1__node_modules_threejs_export_stl_src__["b" /* mimeType */] });
     var a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
     a.download = "vase.stl";
@@ -280,8 +304,7 @@ setTimeout(function () {
 }, 3500);
 
 /***/ }),
-/* 2 */,
-/* 3 */
+/* 2 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
