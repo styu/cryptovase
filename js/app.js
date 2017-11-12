@@ -69,18 +69,27 @@ var lathe = new Physijs.BoxMesh(geometry, material);
 lathe.rotation.x += Math.PI / 8;
 scene.add(lathe);
 
+
+var geometry = new THREE.BoxGeometry( 30, 1, 30 );
+var material = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
+const groundMaterial = Physijs.createMaterial(
+    material,
+    0.8,
+    0.3,
+);
 // var groundMaterial = Physijs.createMaterial(
 //     new THREE.MeshLambertMaterial({ color: 0x795548 }),
 //     0.8,
 //     0.3,
 // );
-// let ground = new Physijs.BoxMesh(
-//     new THREE.BoxGeometry(100, 1, 100),
-//     groundMaterial,
-//     0 // mass
-// );
-// ground.receiveShadow = true;
-// scene.add( ground );
+let ground = new Physijs.BoxMesh(
+    geometry,
+    groundMaterial,
+    0 // mass
+);
+ground.rotation.x += Math.PI / 8;
+ground.receiveShadow = true;
+scene.add( ground );
 
 var hasPaused = false;
 
@@ -116,7 +125,7 @@ var render = function () {
         scene.add(lights[1]);
         scene.add(lights[2]);
         scene.add(lathe);
-        // scene.add( ground );
+        scene.add( ground );
         scene.addEventListener(
             'update',
             function () {
