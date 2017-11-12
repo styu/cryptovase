@@ -34,22 +34,133 @@ var points = vasePoints.map(point => new THREE.Vector2(point[0], point[1]));
 const lowest = Math.min(...vasePoints.map(point => point[1]));
 const highest = Math.max(...vasePoints.map(point => point[1]));
 
-var drawVase = function (points) {
-    var scale = 18;
-    var firstCanvas = document.getElementsByTagName("canvas")[0];
-    var overlayCanvas = document.getElementById('overlay');
-    overlayCanvas.width = firstCanvas.width;
-    overlayCanvas.height = firstCanvas.height;
-    var c2 = overlayCanvas.getContext('2d');
-    c2.fillStyle = '#38a2f7';
+// scaling for canvas frame I'm going to lose this
+var canvasVaseScale = 18;
+var vaseColor = "#38a2f7"
+
+/// shhhhh
+
+var drawAlmostVase = function(c2, points, step, totalSteps) {
+
+    c2.clearRect(0, 0, c2.canvas.width, c2.canvas.height);
+
+    if (step < totalSteps) {
+        step += 5;
+        setTimeout(function() {
+            drawAlmostVase(c2, points, step, totalSteps);
+        }, 30);
+        c2.fillStyle = "#ffffff";
+        c2.rect(0, 0, c2.canvas.width, c2.canvas.height);
+        c2.fill();
+        
+    } else {
+        startRotate();
+    }
+    
+    c2.fillStyle = vaseColor;
+    c2.beginPath();
+    // c2.moveTo(0, params[(params.length-1)][1]*scale);
+
+    var oneSide = [];
+    //for (let i in points) {
+    for (var i = 0; i < 11; i ++) {
+        let vertex = points[i]
+        console.log(c2)
+        let finalX = (vertex[0] * canvasVaseScale)
+        let x = c2.canvas.width / 2 - (100 - (100 - finalX)*(bezier(step/totalSteps)))
+        oneSide.push(x);
+        let y = (12.3 - vertex[1]) * canvasVaseScale + 80
+        c2.lineTo(x, y);
+    }
+    for (var i = 11; i < 22; i ++) {
+        let vertex = points[i]
+        let x = oneSide[(22-i)-1] + 10
+        let y = (12.3 - vertex[1]) * canvasVaseScale + 80
+        c2.lineTo(x, y);
+    }
+
+    for (var i = 22; i < points.length; i ++) {
+        let vertex = points[i]
+        console.log(c2)
+        let finalX = (vertex[0] * canvasVaseScale)
+        let x = c2.canvas.width/2
+        let y = (12.3 - vertex[1]) * canvasVaseScale + 80
+        c2.lineTo(x, y);
+    }
+    /*
+    for (let i in points) {
+        let vertex = points[i]
+        c2.lineTo(firstCanvas.width / 2 + ((vertex[0] * scale)), (12.3 - vertex[1]) * scale + 80);
+    }
+    */
+
+    // c2.lineTo(0, 0)
+    c2.closePath();
+    c2.fill();
+
+    c2.beginPath();
+    // c2.moveTo(0, params[(params.length-1)][1]*scale);
+
+    var oneSide = [];
+    //for (let i in points) {
+    for (var i = 0; i < 11; i ++) {
+        let vertex = points[i]
+        console.log(c2)
+        let finalX = (vertex[0] * canvasVaseScale)
+        let x = c2.canvas.width / 2 + (100 - (100 - finalX)*(bezier(step/totalSteps)))
+        oneSide.push(x);
+        let y = (12.3 - vertex[1]) * canvasVaseScale + 80
+        c2.lineTo(x, y);
+    }
+    for (var i = 11; i < 22; i ++) {
+        let vertex = points[i]
+        let x = oneSide[(22-i)-1] - 10
+        let y = (12.3 - vertex[1]) * canvasVaseScale + 80
+        c2.lineTo(x, y);
+    }
+
+    for (var i = 22; i < points.length; i ++) {
+        let vertex = points[i]
+        console.log(c2)
+        let finalX = (vertex[0] * canvasVaseScale)
+        let x = c2.canvas.width/2
+        let y = (12.3 - vertex[1]) * canvasVaseScale + 80
+        c2.lineTo(x, y);
+    }
+    /*
+    for (let i in points) {
+        let vertex = points[i]
+        c2.lineTo(firstCanvas.width / 2 + ((vertex[0] * scale)), (12.3 - vertex[1]) * scale + 80);
+    }
+    */
+
+    // c2.lineTo(0, 0)
+    c2.closePath();
+    c2.fill();
+
+}
+
+var drawVase = function (c2, points) {
+
+
+    c2.fillStyle = vaseColor;
     c2.beginPath();
 
     for (let i in points) {
         let vertex = points[i]
-        c2.lineTo(firstCanvas.width/2 - (vertex[0] * scale), (12.3 - vertex[1]) * scale + 80);
+        console.log(c2)
+        c2.lineTo(c2.canvas.width / 2 - (vertex[0] * canvasVaseScale), (12.3 - vertex[1]) * canvasVaseScale + 80);
     }
+
+    /*
+    for (let i in points) {
+        let vertex = points[i]
+        c2.lineTo(firstCanvas.width / 2 + ((vertex[0] * scale)), (12.3 - vertex[1]) * scale + 80);
+    }
+    */
     c2.closePath();
     c2.fill();
+
 }
 
 var phiLength = Math.PI / 10;
@@ -132,9 +243,14 @@ var render = function () {
 
 renderer.render(scene, camera);
 
-$(function() {
-    drawVase(vasePoints);
-    startRotate();
+$(function () {
+    var firstCanvas = document.getElementsByTagName("canvas")[0];
+    var overlayCanvas = document.getElementById('overlay');
+    overlayCanvas.width = firstCanvas.width;
+    overlayCanvas.height = firstCanvas.height;
+    var c2 = overlayCanvas.getContext('2d');
+
+    drawAlmostVase(c2, vasePoints, 0, 300);
 })
 
 var startRotate = function () {
@@ -146,7 +262,7 @@ var startRotate = function () {
     render();
 }
 
-var downloadVase = function() {
+var downloadVase = function () {
     let g = finalVase;
     g.type = "BufferGeometry"
     console.log(g);

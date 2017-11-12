@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 1);
+/******/ 	return __webpack_require__(__webpack_require__.s = 2);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -148,8 +148,8 @@ const getVaseParams = function (seed) {
         let x = points[points.length - i - 1][0] - 0.3;
         let y = points[points.length - i - 1][1];
         if (i == points.length - 1) {
-            innerShell.push([x - 0.5, y + 0.3]);
-            innerShell.push([0, y + 0.3]);
+            innerShell.push([x - 0.5, y + 0.5]);
+            innerShell.push([0, y + 0.5]);
             innerShell.push([0, y]);
             innerShell.push(points[0]);
         } else {
@@ -165,7 +165,8 @@ const getVaseParams = function (seed) {
 
 
 /***/ }),
-/* 1 */
+/* 1 */,
+/* 2 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";

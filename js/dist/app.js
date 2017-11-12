@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 3);
+/******/ 	return __webpack_require__(__webpack_require__.s = 1);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -148,8 +148,8 @@ const getVaseParams = function (seed) {
         let x = points[points.length - i - 1][0] - 0.3;
         let y = points[points.length - i - 1][1];
         if (i == points.length - 1) {
-            innerShell.push([x - 0.5, y + 0.3]);
-            innerShell.push([0, y + 0.3]);
+            innerShell.push([x - 0.5, y + 0.5]);
+            innerShell.push([0, y + 0.5]);
             innerShell.push([0, y]);
             innerShell.push(points[0]);
         } else {
@@ -165,15 +165,13 @@ const getVaseParams = function (seed) {
 
 
 /***/ }),
-/* 1 */,
-/* 2 */,
-/* 3 */
+/* 1 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vaseify__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_threejs_export_stl_src__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_threejs_export_stl_src__ = __webpack_require__(3);
 
 
 
@@ -210,20 +208,127 @@ var points = vasePoints.map(point => new THREE.Vector2(point[0], point[1]));
 const lowest = Math.min(...vasePoints.map(point => point[1]));
 const highest = Math.max(...vasePoints.map(point => point[1]));
 
-var drawVase = function (points) {
-    var scale = 18;
-    var firstCanvas = document.getElementsByTagName("canvas")[0];
-    var overlayCanvas = document.getElementById('overlay');
-    overlayCanvas.width = firstCanvas.width;
-    overlayCanvas.height = firstCanvas.height;
-    var c2 = overlayCanvas.getContext('2d');
-    c2.fillStyle = '#38a2f7';
+// scaling for canvas frame I'm going to lose this
+var canvasVaseScale = 18;
+var vaseColor = "#38a2f7";
+
+/// shhhhh
+
+var drawAlmostVase = function (c2, points, step, totalSteps) {
+
+    c2.clearRect(0, 0, c2.canvas.width, c2.canvas.height);
+
+    if (step < totalSteps) {
+        step += 5;
+        setTimeout(function () {
+            drawAlmostVase(c2, points, step, totalSteps);
+        }, 30);
+        c2.fillStyle = "#ffffff";
+        c2.rect(0, 0, c2.canvas.width, c2.canvas.height);
+        c2.fill();
+    } else {
+        startRotate();
+    }
+
+    c2.fillStyle = vaseColor;
+    c2.beginPath();
+    // c2.moveTo(0, params[(params.length-1)][1]*scale);
+
+    var oneSide = [];
+    //for (let i in points) {
+    for (var i = 0; i < 11; i++) {
+        let vertex = points[i];
+        console.log(c2);
+        let finalX = vertex[0] * canvasVaseScale;
+        let x = c2.canvas.width / 2 - (100 - (100 - finalX) * bezier(step / totalSteps));
+        oneSide.push(x);
+        let y = (12.3 - vertex[1]) * canvasVaseScale + 80;
+        c2.lineTo(x, y);
+    }
+    for (var i = 11; i < 22; i++) {
+        let vertex = points[i];
+        let x = oneSide[22 - i - 1] + 10;
+        let y = (12.3 - vertex[1]) * canvasVaseScale + 80;
+        c2.lineTo(x, y);
+    }
+
+    for (var i = 22; i < points.length; i++) {
+        let vertex = points[i];
+        console.log(c2);
+        let finalX = vertex[0] * canvasVaseScale;
+        let x = c2.canvas.width / 2;
+        let y = (12.3 - vertex[1]) * canvasVaseScale + 80;
+        c2.lineTo(x, y);
+    }
+    /*
+    for (let i in points) {
+        let vertex = points[i]
+        c2.lineTo(firstCanvas.width / 2 + ((vertex[0] * scale)), (12.3 - vertex[1]) * scale + 80);
+    }
+    */
+
+    // c2.lineTo(0, 0)
+    c2.closePath();
+    c2.fill();
+
+    c2.beginPath();
+    // c2.moveTo(0, params[(params.length-1)][1]*scale);
+
+    var oneSide = [];
+    //for (let i in points) {
+    for (var i = 0; i < 11; i++) {
+        let vertex = points[i];
+        console.log(c2);
+        let finalX = vertex[0] * canvasVaseScale;
+        let x = c2.canvas.width / 2 + (100 - (100 - finalX) * bezier(step / totalSteps));
+        oneSide.push(x);
+        let y = (12.3 - vertex[1]) * canvasVaseScale + 80;
+        c2.lineTo(x, y);
+    }
+    for (var i = 11; i < 22; i++) {
+        let vertex = points[i];
+        let x = oneSide[22 - i - 1] - 10;
+        let y = (12.3 - vertex[1]) * canvasVaseScale + 80;
+        c2.lineTo(x, y);
+    }
+
+    for (var i = 22; i < points.length; i++) {
+        let vertex = points[i];
+        console.log(c2);
+        let finalX = vertex[0] * canvasVaseScale;
+        let x = c2.canvas.width / 2;
+        let y = (12.3 - vertex[1]) * canvasVaseScale + 80;
+        c2.lineTo(x, y);
+    }
+    /*
+    for (let i in points) {
+        let vertex = points[i]
+        c2.lineTo(firstCanvas.width / 2 + ((vertex[0] * scale)), (12.3 - vertex[1]) * scale + 80);
+    }
+    */
+
+    // c2.lineTo(0, 0)
+    c2.closePath();
+    c2.fill();
+};
+
+var drawVase = function (c2, points) {
+
+    c2.fillStyle = vaseColor;
     c2.beginPath();
 
     for (let i in points) {
         let vertex = points[i];
-        c2.lineTo(firstCanvas.width / 2 - vertex[0] * scale, (12.3 - vertex[1]) * scale + 80);
+        console.log(c2);
+        c2.lineTo(c2.canvas.width / 2 - vertex[0] * canvasVaseScale, (12.3 - vertex[1]) * canvasVaseScale + 80);
     }
+
+    /*
+    for (let i in points) {
+        let vertex = points[i]
+        c2.lineTo(firstCanvas.width / 2 + ((vertex[0] * scale)), (12.3 - vertex[1]) * scale + 80);
+    }
+    */
     c2.closePath();
     c2.fill();
 };
@@ -297,8 +402,13 @@ var render = function () {
 renderer.render(scene, camera);
 
 $(function () {
-    drawVase(vasePoints);
-    startRotate();
+    var firstCanvas = document.getElementsByTagName("canvas")[0];
+    var overlayCanvas = document.getElementById('overlay');
+    overlayCanvas.width = firstCanvas.width;
+    overlayCanvas.height = firstCanvas.height;
+    var c2 = overlayCanvas.getContext('2d');
+
+    drawAlmostVase(c2, vasePoints, 0, 300);
 });
 
 var startRotate = function () {
@@ -324,7 +434,8 @@ var downloadVase = function () {
 };
 
 /***/ }),
-/* 4 */
+/* 2 */,
+/* 3 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
