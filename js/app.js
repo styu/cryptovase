@@ -6,12 +6,15 @@ Physijs.scripts.ammo = './ammo.js';
 
 var scene = new THREE.Scene();
 // scene.setGravity(new THREE.Vector3( 0, 0, 0 ));
-var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 50);
+const scale = 3;
+const width = 300 * scale;
+const height = 400 * scale;
+var camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 50);
 camera.position.z = 25;
 
 var renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setPixelRatio(window.devicePixelRatio);
-renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setSize(width, height);
 renderer.setClearColor(0xffffff, 1);
 document.body.appendChild(renderer.domElement);
 
@@ -30,10 +33,12 @@ scene.add(lights[2]);
 
 var vasePoints = getVaseParams();
 var points = vasePoints.map(point => new THREE.Vector2(point[0], point[1]));
+const lowest = Math.min(...vasePoints.map(point => point[1]));
+const highest = Math.max(...vasePoints.map(point => point[1]));
 // ok what
 
 var drawVase = function (points) {
-    var scale = 20;
+    var scale = (highest - lowest) * window.devicePixelRatio;
     var firstCanvas = document.getElementsByTagName("canvas")[0];
     var overlayCanvas = document.getElementById('overlay');
     overlayCanvas.width = firstCanvas.width;
@@ -45,7 +50,7 @@ var drawVase = function (points) {
 
     for (let i in points) {
         let vertex = points[i]
-        c2.lineTo(firstCanvas.width/4 - (vertex[0] * scale), (12.3 - vertex[1]) * scale + 100);
+        c2.lineTo(firstCanvas.width/4 - (vertex[0] * scale), (12.3 - vertex[1]) * scale + 110);
     }
     // c2.lineTo(0, 0)
     c2.closePath();
