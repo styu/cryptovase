@@ -40,52 +40,62 @@ var vaseColor = "#38a2f7"
 
 /// shhhhh
 
-var drawAlmostVase = function(c2, points, step, totalSteps) {
+var theFinalVasePoints = [];
+var fadeOutVase = function () {
+    $('#overlay').fadeOut(1000);
+    startRotate();
+}
+var drawAlmostVase = function (c2, points, step, totalSteps) {
 
     c2.clearRect(0, 0, c2.canvas.width, c2.canvas.height);
 
     if (step < totalSteps) {
         step += 5;
-        setTimeout(function() {
+        setTimeout(function () {
             drawAlmostVase(c2, points, step, totalSteps);
         }, 30);
         c2.fillStyle = "#ffffff";
         c2.rect(0, 0, c2.canvas.width, c2.canvas.height);
         c2.fill();
-        
+
     } else {
-        startRotate();
+        fadeOutVase();
     }
-    
+
     c2.fillStyle = vaseColor;
     c2.beginPath();
     // c2.moveTo(0, params[(params.length-1)][1]*scale);
 
     var oneSide = [];
     //for (let i in points) {
-    for (var i = 0; i < 11; i ++) {
+    theFinalVasePoints = [];
+
+    for (var i = 0; i < 11; i++) {
         let vertex = points[i]
         console.log(c2)
         let finalX = (vertex[0] * canvasVaseScale)
-        let x = c2.canvas.width / 2 - (100 - (100 - finalX)*(bezier(step/totalSteps)))
+        let x = c2.canvas.width / 2 - (100 - (100 - finalX) * (bezier(step / totalSteps)))
         oneSide.push(x);
         let y = (12.3 - vertex[1]) * canvasVaseScale + 80
         c2.lineTo(x, y);
+        theFinalVasePoints.push([x, y])
     }
-    for (var i = 11; i < 22; i ++) {
+    for (var i = 11; i < 22; i++) {
         let vertex = points[i]
-        let x = oneSide[(22-i)-1] + 10
+        let x = oneSide[(22 - i) - 1] + 10
         let y = (12.3 - vertex[1]) * canvasVaseScale + 80
         c2.lineTo(x, y);
+        theFinalVasePoints.push([x, y])
     }
 
-    for (var i = 22; i < points.length; i ++) {
+    for (var i = 22; i < points.length; i++) {
         let vertex = points[i]
         console.log(c2)
         let finalX = (vertex[0] * canvasVaseScale)
-        let x = c2.canvas.width/2
+        let x = c2.canvas.width / 2
         let y = (12.3 - vertex[1]) * canvasVaseScale + 80
         c2.lineTo(x, y);
+        theFinalVasePoints.push([x, y])
     }
     /*
     for (let i in points) {
@@ -103,27 +113,27 @@ var drawAlmostVase = function(c2, points, step, totalSteps) {
 
     var oneSide = [];
     //for (let i in points) {
-    for (var i = 0; i < 11; i ++) {
+    for (var i = 0; i < 11; i++) {
         let vertex = points[i]
         console.log(c2)
         let finalX = (vertex[0] * canvasVaseScale)
-        let x = c2.canvas.width / 2 + (100 - (100 - finalX)*(bezier(step/totalSteps)))
+        let x = c2.canvas.width / 2 + (100 - (100 - finalX) * (bezier(step / totalSteps)))
         oneSide.push(x);
         let y = (12.3 - vertex[1]) * canvasVaseScale + 80
         c2.lineTo(x, y);
     }
-    for (var i = 11; i < 22; i ++) {
+    for (var i = 11; i < 22; i++) {
         let vertex = points[i]
-        let x = oneSide[(22-i)-1] - 10
+        let x = oneSide[(22 - i) - 1] - 10
         let y = (12.3 - vertex[1]) * canvasVaseScale + 80
         c2.lineTo(x, y);
     }
 
-    for (var i = 22; i < points.length; i ++) {
+    for (var i = 22; i < points.length; i++) {
         let vertex = points[i]
         console.log(c2)
         let finalX = (vertex[0] * canvasVaseScale)
-        let x = c2.canvas.width/2
+        let x = c2.canvas.width / 2
         let y = (12.3 - vertex[1]) * canvasVaseScale + 80
         c2.lineTo(x, y);
     }
@@ -141,7 +151,6 @@ var drawAlmostVase = function(c2, points, step, totalSteps) {
 }
 
 var drawVase = function (c2, points) {
-
 
     c2.fillStyle = vaseColor;
     c2.beginPath();
@@ -256,7 +265,7 @@ var render = function () {
     }
 };
 
-renderer.render(scene, camera);
+// renderer.render(scene, camera);
 
 $(function () {
     var firstCanvas = document.getElementsByTagName("canvas")[0];
@@ -265,6 +274,7 @@ $(function () {
     overlayCanvas.height = firstCanvas.height;
     var c2 = overlayCanvas.getContext('2d');
 
+    renderer.render(scene, camera);
     drawAlmostVase(c2, vasePoints, 0, 300);
 })
 
