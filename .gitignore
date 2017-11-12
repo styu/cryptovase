@@ -1,5 +1,5 @@
 node_modules/
-dist/
+js/dist/
 npm-error.log
 yarn-error.log
 .DS_Store

@@ -44,12 +44,26 @@ var hex2uint8 = function (hexString) {
 // Attempts to remine a block. Note that it doesn't use the
 // full bitcoin header to hash.
 export const remineBlock = function (blockData) {
-    var difficulty = 14;
+    // Params
+    var redrawDifficulty = 12;
+    var finalBoss = 18;
+    var minTimeout = 1000; // Number of ms between vase redraws
+
+    // Used on every loop
     var matches = -1;
     var hash = 0;
     var hashHex = "";
-    var bestMatch = -1;
     var newNonce;
+
+    // To track the best best match
+    var bestestMatch = -1;
+    var bestestHash = "";
+    var bestestNonce;
+
+    // To track the best match during the timeout
+    var bestMatch = -1;
+    var bestHash = "";
+    var bestNonce;
 
     var tries = 0;
     var numTriesBox = $('#numTries');
@@ -83,13 +97,8 @@ export const remineBlock = function (blockData) {
                     matches += 1;
                 }
             }
-            if (matches >= difficulty) {
-                if (matches >= bestMatch) {
-                    bestMatch = matches;
-                    $('#bestMatch').text(matches/1.28 + '%');
-                }
+            if (matches >= redrawDifficulty) {
                 
-                $('#bestHash').text(hashHex);
                 var matchText = ""
                 for (var i in hashHex) {
                     if (hashHex[i] == blockData.hash[i]) {
@@ -98,15 +107,21 @@ export const remineBlock = function (blockData) {
                         matchText += ".";
                     }
                 }
+                $('#currentHash').text(hashHex);
                 $('#matchHash').text(matchText);
                 convertNonceToVase(newNonce, blockData);
+            }
+            if (matches >= bestMatch) {
+                bestMatch = matches;
+
+                $('#bestMatch').text(matches/1.28 + '%');
             }
             if (tries % 7 == 0)
             {
                 numTriesBox.text(tries);
             }
         }
-        if (matches >= 25) {
+        if (matches >= finalBoss) {
             numTriesBox.text(tries);
             clearInterval(g);
         }
