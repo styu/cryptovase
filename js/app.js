@@ -90,6 +90,19 @@ var drawAlmostVase = function (c2, points, step, totalSteps, norun, startX) {
 
             drawAlmostVase(c2, vp, 0, totalSteps, false, newStartX);
 
+            const desc = [
+                "vase variance",
+                "shape variance",
+                "foot value",
+                "body value",
+                "trim value",
+                "neck value",
+                "shoulder value",
+                "opening value",
+            ];
+            const text = vp.slice(0, desc.length).map((point, i) => `${desc[i]}: ${vp[i].toString().substring(0, 5)}`).join("<br />");
+            $('.info').html(text);
+
             // PLAY ME AGAIN
         } else {
             fadeOutVase();
@@ -264,22 +277,25 @@ var finalVase;
 
 var phiVelocity = Math.PI / 90;
 var totalSteps = (Math.PI * 2) / (Math.PI / 90);
-var stepsBeforeGravityThreshold = totalSteps + 200;
+var stepsBeforeGravityThreshold = totalSteps + 30;
 var stepsBeforeSwingingThreshold = 50 + totalSteps;
 var currentStep = 0;
 
 var bezier = function (t) { return t < .5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1 }
 
 var hasSetGravity = false;
+var hasDownloaded = false;
 var render = function () {
 
-    if (stepsBeforeSwingingThreshold < currentStep) {
-        lathe.rotation.y -= Math.PI / 500;
-    }
-    lathe.rotation.x += Math.PI / 1200;
-
-    if (stepsBeforeSwingingThreshold >= currentStep) {
-        lathe.rotation.z -= Math.PI / 4000;
+    if (currentStep < stepsBeforeGravityThreshold) {
+        if (stepsBeforeSwingingThreshold < currentStep) {
+            lathe.rotation.y -= Math.PI / 500;
+        }
+        lathe.rotation.x += Math.PI / 1200;
+    
+        if (stepsBeforeSwingingThreshold >= currentStep) {
+            lathe.rotation.z -= Math.PI / 4000;
+        }
     }
 
     requestAnimationFrame(render);
@@ -293,9 +309,9 @@ var render = function () {
 
         lathe.geometry = geometry;
         finalVase = geometry;
-    } else if (currentStep > stepsBeforeGravityThreshold && !hasSetGravity) {
+    } else if (currentStep > stepsBeforeGravityThreshold && !hasSetGravity && hasDownloaded) {
         scene = new Physijs.Scene();
-        scene.setGravity(new THREE.Vector3(0, -50, 0));
+        scene.setGravity(new THREE.Vector3(0, -90, 0));
         scene.add(lights[0]);
         scene.add(lights[1]);
         scene.add(lights[2]);
@@ -303,13 +319,14 @@ var render = function () {
         // scene.add( ground );
         // scene.add(groundFront);
         hasSetGravity = true;
+    } else if (currentStep > stepsBeforeGravityThreshold && $("#main-button").text() !== "download") {
+        $("#main-button").fadeIn();
+        $("#main-button").text("download");
     }
+
     currentStep += 1;
     renderer.render(scene, camera);
 
-    if (currentStep === totalSteps) {
-        downloadVase();
-    }
     if (hasSetGravity) {
         scene.simulate();
     }
@@ -332,7 +349,13 @@ $(function () {
 })
 
 $(document).on('click', '.btn', function () {
-    drawAlmostVase(c2, setOfVasePoints[4], 0, 80);
+    if (currentStep > stepsBeforeGravityThreshold) {
+        downloadVase();
+        hasDownloaded = true;
+    } else {
+        drawAlmostVase(c2, setOfVasePoints[4], 0, 80);
+        $("#main-button").fadeOut();
+    }
 })
 
 var startRotate = function () {

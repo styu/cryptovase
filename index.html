@@ -30,6 +30,7 @@
             font-size: 30px;
             font-family: 'Avenir';
             text-align: center;
+            font-weight: 500;
         }
 
         .caption {
@@ -39,7 +40,7 @@
             font-size: 16px;
             font-family: 'Avenir';
             text-align: center;
-            color: #666;
+            color: #999;
         }
 
         .go {
@@ -55,7 +56,9 @@
 
         .info {
             position: absolute;
-            width: 100%;
+            width: 500px;
+            left: 50%;
+            margin-left: -250px;
             top: 440px;
             z-index: 10001;
             font-size: 16px;
@@ -88,11 +91,11 @@
 </head>
 
 <body>
-    <div class="title">BitVase</div>
+    <div class="title">BitVase!</div>
     <div class="caption">By Team Parsnip. Built for Hacking Arts 2017 :)</div>
     <div class="go">
         <input type="text">
-        <button class="btn">sculpt vase!</button>
+        <button class="btn" id="main-button">sculpt vase!</button>
     </div>
     <div class="info">
         vase variance: 0.1<br />
