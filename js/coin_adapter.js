@@ -7,7 +7,7 @@
 // nonce - the random number that gets 'mined'
 // hash - the has of the current block, constructed from all the other data returned
 // previous_block_hash - hash of the previous block
-var getBlock = function (blockNum, callback) {
+var getBlock = async function (blockNum, callback) {
     $.ajax({
         url: "https://api.smartbit.com.au/v1/blockchain/block/"+blockNum,
         dataType: "json"
@@ -42,50 +42,69 @@ var hex2uint8 = function (hexString) {
 
 // Attempts to remine a block. Note that it doesn't use the
 // full bitcoin header to hash.
-var remineBlock = function (blockData) {
-    var difficulty = 4;
+var remineBlock = async function (blockData) {
+    var difficulty = 24;
     var matches = -1;
     var hash = 0;
     var hashHex = "";
+    var bestMatch = -1;
 
     var tries = 0;
+    numTriesBox = $('#numTries');
 
-    while (matches < difficulty) {
-        tries += 1;
+    $('#origHash').text(blockData.hash);
 
-        if (tries % 100 == 0) {
-            console.log(tries);
-        }
-
-        hash = sha256.create();
+    var g = setInterval(function() {
+        var subTries = 0;
+        while (subTries < 937) {
+            subTries += 1;
+            tries += 1;
+            
+            hash = sha256.create();
+            
+            hash.update(hex2uint8(blockData.previous_block_hash));
+            hash.update(hex2uint8(blockData.merkleroot));
         
-        hash.update(hex2uint8(blockData.previous_block_hash));
-        hash.update(hex2uint8(blockData.merkleroot));
-    
-        newNonce = new Uint8Array(4);
-        newNonce[0] = Math.random() * 256;
-        newNonce[1] = Math.random() * 256;
-        newNonce[2] = Math.random() * 256;
-        newNonce[3] = Math.random() * 256;
-    
-        hash.update(newNonce);
-    
-        hashHex = hash.hex();
-        //console.log("Attempting to match")
-        //console.log(hashHex);
-        //console.log(blockData.hash);
-    
-        matches = 0;
-        for (var i in hashHex) {
-            if (hashHex[i] == blockData.hash[i]) {
-                matches += 1;
+            newNonce = new Uint8Array(4);
+            newNonce[0] = Math.random() * 256;
+            newNonce[1] = Math.random() * 256;
+            newNonce[2] = Math.random() * 256;
+            newNonce[3] = Math.random() * 256;
+        
+            hash.update(newNonce);
+        
+            hashHex = hash.hex();
+        
+            matches = 0;
+            for (var i in hashHex) {
+                if (hashHex[i] == blockData.hash[i]) {
+                    matches += 1;
+                }
+            }
+            if (matches >= bestMatch) {
+                bestMatch = matches;
+                $('#bestMatch').text(matches);
+                $('#bestHash').text(hashHex);
+                var matchText = ""
+                for (var i in hashHex) {
+                    if (hashHex[i] == blockData.hash[i]) {
+                        matchText += hashHex[i];
+                    } else {
+                        matchText += ".";
+                    }
+                }
+                $('#matchHash').text(matchText);
+            }
+            if (tries % 7 == 0)
+            {
+                numTriesBox.text(tries);
             }
         }
-    }
-    
-    console.log("Got " + matches + " matches");
-    console.log(blockData.hash);
-    console.log(hashHex);
+        if (matches >= difficulty) {
+            numTriesBox.text(tries);
+            clearInterval(g);
+        }
+    }, 1);
 }
 
 var convertNonceToVase = function (nonce) {

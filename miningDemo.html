@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset=utf-8>
+        <style>
+			body { margin: 0; }
+            #overlay {
+                position: absolute;
+                top: 0;
+                left: 0;
+            }
+		</style>
+    </head>
+    <body>
+        <script src="js/sha256.min.js"></script>
+        <script src="js/jquery.min.js"></script>
+        <script src="js/lodash.min.js"></script>
+        <script src="js/coin_adapter.js"></script>
+        <script src="js/mining.demo.js"></script>
+
+        <div>
+            <div>
+                Amount of effort: <span id="numTries">0</span>
+            </div>
+            <div>
+                Best match: <span id="bestMatch"></span>
+            </div>
+            <div id="origHash" style="font-family:monospace">retrieving data...</div>
+            <div id="bestHash" style="font-family:monospace">xxx</div>
+            <div id="matchHash" style="font-family:monospace">xxx</div>
+        </div>
+    </body>
+</html>
