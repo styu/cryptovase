@@ -13,7 +13,7 @@ const drawVase = function (seed) {
 
     for (let i in params) {
         const vertex = params[i]
-        c2.lineTo(vertex[0]*scale, (13.5-vertex[1])*scale);
+        c2.lineTo(vertex[0]*scale, (12.3-vertex[1])*scale);
     }
     // c2.lineTo(0, 0)
     c2.closePath();
