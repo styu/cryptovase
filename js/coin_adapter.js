@@ -1,3 +1,4 @@
+import { drawVase } from "./vase.demo.js";
 // Using the API from https://www.smartbit.com.au/api
 
 // Gets the block from the blockchain at height blockNum and calls callback with the relevant data
@@ -7,7 +8,7 @@
 // nonce - the random number that gets 'mined'
 // hash - the has of the current block, constructed from all the other data returned
 // previous_block_hash - hash of the previous block
-var getBlock = async function (blockNum, callback) {
+export const getBlock = function (blockNum, callback) {
     $.ajax({
         url: "https://api.smartbit.com.au/v1/blockchain/block/"+blockNum,
         dataType: "json"
@@ -42,15 +43,16 @@ var hex2uint8 = function (hexString) {
 
 // Attempts to remine a block. Note that it doesn't use the
 // full bitcoin header to hash.
-var remineBlock = async function (blockData) {
-    var difficulty = 24;
+export const remineBlock = function (blockData) {
+    var difficulty = 14;
     var matches = -1;
     var hash = 0;
     var hashHex = "";
     var bestMatch = -1;
+    var newNonce;
 
     var tries = 0;
-    numTriesBox = $('#numTries');
+    var numTriesBox = $('#numTries');
 
     $('#origHash').text(blockData.hash);
 
@@ -81,9 +83,12 @@ var remineBlock = async function (blockData) {
                     matches += 1;
                 }
             }
-            if (matches >= bestMatch) {
-                bestMatch = matches;
-                $('#bestMatch').text(matches);
+            if (matches >= difficulty) {
+                if (matches >= bestMatch) {
+                    bestMatch = matches;
+                    $('#bestMatch').text(matches/1.28 + '%');
+                }
+                
                 $('#bestHash').text(hashHex);
                 var matchText = ""
                 for (var i in hashHex) {
@@ -94,22 +99,30 @@ var remineBlock = async function (blockData) {
                     }
                 }
                 $('#matchHash').text(matchText);
+                convertNonceToVase(newNonce, blockData);
             }
             if (tries % 7 == 0)
             {
                 numTriesBox.text(tries);
             }
         }
-        if (matches >= difficulty) {
+        if (matches >= 25) {
             numTriesBox.text(tries);
             clearInterval(g);
         }
     }, 1);
 }
 
-var convertNonceToVase = function (nonce) {
-    var seed = [0, 0, 0, 0, 0, 0, 0, 0, 0];
-
+var convertNonceToVase = function (newNonce, blockData) {
+    var seed = new Array();
+    for (var i in newNonce) {
+        seed.push((newNonce[i]%16)/16.0);
+        seed.push(((newNonce[i]/16)%16)/16.0);
+    }
+    for (var i in blockData.hash) {
+        seed.push(parseInt(blockData.hash[blockData.hash.length - 1 - i], 16)/16.0);
+    }
+    drawVase(seed);
 }
 
 //getBlock(500, remineBlock);

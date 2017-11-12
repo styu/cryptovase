@@ -1,12 +1,14 @@
 import { getVaseParams } from "./vaseify";
 
 // takes list of points and generates them
-const drawVase = function (seed) {
+export const drawVase = function (seed) {
+    console.log(seed);
 
     var params = getVaseParams(seed);
     var scale = 30;
 
     var c2 = document.getElementById('c').getContext('2d');
+    c2.clearRect(0, 0, 800, 600);
     c2.fillStyle = '#f00';
     c2.beginPath();
     // c2.moveTo(0, params[(params.length-1)][1]*scale);
