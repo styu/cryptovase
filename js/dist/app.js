@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 1);
+/******/ 	return __webpack_require__(__webpack_require__.s = 3);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -165,13 +165,15 @@ const getVaseParams = function (seed) {
 
 
 /***/ }),
-/* 1 */
+/* 1 */,
+/* 2 */,
+/* 3 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vaseify__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_threejs_export_stl_src__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_threejs_export_stl_src__ = __webpack_require__(4);
 
 
 
@@ -394,6 +396,8 @@ var finalVase;
 
 var phiVelocity = Math.PI / 90;
 var totalSteps = Math.PI * 2 / (Math.PI / 90);
+var stepsBeforeGravityThreshold = totalSteps + 200;
+var stepsBeforeSwingingThreshold = 50 + totalSteps;
 var currentStep = 0;
 
 var bezier = function (t) {
@@ -402,8 +406,15 @@ var bezier = function (t) {
 
 var hasSetGravity = false;
 var render = function () {
-    lathe.rotation.x += Math.PI / 1500;
-    lathe.rotation.z -= Math.PI / 6000;
+
+    if (stepsBeforeSwingingThreshold < currentStep) {
+        lathe.rotation.y -= Math.PI / 500;
+    }
+    lathe.rotation.x += Math.PI / 1200;
+
+    if (stepsBeforeSwingingThreshold >= currentStep) {
+        lathe.rotation.z -= Math.PI / 4000;
+    }
 
     requestAnimationFrame(render);
     if (currentStep <= totalSteps) {
@@ -414,10 +425,9 @@ var render = function () {
 
         lathe.geometry = geometry;
         finalVase = geometry;
-        currentStep += 1;
-    } else if (!hasSetGravity) {
+    } else if (currentStep > stepsBeforeGravityThreshold && !hasSetGravity) {
         scene = new Physijs.Scene();
-        scene.setGravity(new THREE.Vector3(0, -10, 0));
+        scene.setGravity(new THREE.Vector3(0, -50, 0));
         scene.add(lights[0]);
         scene.add(lights[1]);
         scene.add(lights[2]);
@@ -426,6 +436,7 @@ var render = function () {
         // scene.add(groundFront);
         hasSetGravity = true;
     }
+    currentStep += 1;
     renderer.render(scene, camera);
 
     if (currentStep === totalSteps) {
@@ -478,8 +489,7 @@ var downloadVase = function () {
 };
 
 /***/ }),
-/* 2 */,
-/* 3 */
+/* 4 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";

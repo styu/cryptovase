@@ -226,14 +226,23 @@ var finalVase;
 
 var phiVelocity = Math.PI / 90;
 var totalSteps = (Math.PI * 2) / (Math.PI / 90);
+var stepsBeforeGravityThreshold = totalSteps + 200;
+var stepsBeforeSwingingThreshold = 50 + totalSteps;
 var currentStep = 0;
 
 var bezier = function (t) { return t < .5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1 }
 
 var hasSetGravity = false;
 var render = function () {
-    lathe.rotation.x += Math.PI / 1500;
-    lathe.rotation.z -= Math.PI / 6000;
+
+    if (stepsBeforeSwingingThreshold < currentStep ) {
+        lathe.rotation.y -= Math.PI / 500;
+    }
+    lathe.rotation.x += Math.PI / 1200;
+
+    if (stepsBeforeSwingingThreshold >= currentStep ) {
+        lathe.rotation.z -= Math.PI / 4000;
+    }
 
     requestAnimationFrame(render);
     if (currentStep <= totalSteps) {
@@ -246,10 +255,9 @@ var render = function () {
 
         lathe.geometry = geometry;
         finalVase = geometry;
-        currentStep += 1;
-    } else if (!hasSetGravity) {
+    } else if (currentStep > stepsBeforeGravityThreshold && !hasSetGravity) {
         scene = new Physijs.Scene();
-        scene.setGravity(new THREE.Vector3(0, -10, 0));
+        scene.setGravity(new THREE.Vector3(0, -50, 0));
         scene.add(lights[0]);
         scene.add(lights[1]);
         scene.add(lights[2]);
@@ -258,6 +266,7 @@ var render = function () {
         // scene.add(groundFront);
         hasSetGravity = true;
     }
+    currentStep += 1;
     renderer.render(scene, camera);
 
     if (currentStep === totalSteps) {
