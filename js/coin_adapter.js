@@ -30,4 +30,67 @@ var getBlock = function (blockNum, callback) {
     });
 }
 
-//getBlock(500, console.log);
+var hex2uint8 = function (hexString) {
+    var bytes = new Uint8Array(hexString.length / 2);
+
+    for(var i = 0; i < hexString.length-1; i+=2) {
+        bytes[i/2] = parseInt(hexString.substr(i, 2), 16);
+    }
+
+    return bytes;
+}
+
+// Attempts to remine a block. Note that it doesn't use the
+// full bitcoin header to hash.
+var remineBlock = function (blockData) {
+    var difficulty = 4;
+    var matches = -1;
+    var hash = 0;
+    var hashHex = "";
+
+    var tries = 0;
+
+    while (matches < difficulty) {
+        tries += 1;
+
+        if (tries % 100 == 0) {
+            console.log(tries);
+        }
+
+        hash = sha256.create();
+        
+        hash.update(hex2uint8(blockData.previous_block_hash));
+        hash.update(hex2uint8(blockData.merkleroot));
+    
+        newNonce = new Uint8Array(4);
+        newNonce[0] = Math.random() * 256;
+        newNonce[1] = Math.random() * 256;
+        newNonce[2] = Math.random() * 256;
+        newNonce[3] = Math.random() * 256;
+    
+        hash.update(newNonce);
+    
+        hashHex = hash.hex();
+        //console.log("Attempting to match")
+        //console.log(hashHex);
+        //console.log(blockData.hash);
+    
+        matches = 0;
+        for (var i in hashHex) {
+            if (hashHex[i] == blockData.hash[i]) {
+                matches += 1;
+            }
+        }
+    }
+    
+    console.log("Got " + matches + " matches");
+    console.log(blockData.hash);
+    console.log(hashHex);
+}
+
+var convertNonceToVase = function (nonce) {
+    var seed = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+
+}
+
+//getBlock(500, remineBlock);
