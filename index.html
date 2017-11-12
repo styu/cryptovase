@@ -34,12 +34,33 @@
                 text-align: center;
                 color: #666;
             }
+            .go {
+                position: absolute;
+                width: 100%;
+                top: 100px;
+                z-index: 10001;
+                font-size: 16px;
+                font-family: 'Avenir';
+                text-align: center;
+                color: #666;
+            }
+            input, button {
+                font-size: 20px;
+            }
+            button {
+                border: 1px solid #ccc;
+                background-color: #eee;
+                color: #333;
+            }
+            input {
+                width: 400px;
+            }
 		</style>
     </head>
     <body>
         <div class="title">BitVase!</div>
         <div class="caption">By Team Parsnip. Built for Hacking Arts 2017 :)</div>
-        <div class="go">hello</div>
+        <div class="go"><input type="text"> <button class="btn">sculpt vase!</button></div>
         <div id="vaseWindow"></div>
         <script src="js/sha256.min.js"></script>
         <script src="js/three.js"></script>

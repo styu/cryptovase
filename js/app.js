@@ -45,15 +45,17 @@ var fadeOutVase = function () {
     $('#overlay').fadeOut(1000);
     startRotate();
 }
-var drawAlmostVase = function (c2, points, step, totalSteps) {
+var drawAlmostVase = function (c2, points, step, totalSteps, norun) {
 
     c2.clearRect(0, 0, c2.canvas.width, c2.canvas.height);
 
     if (step < totalSteps) {
         step += 5;
-        setTimeout(function () {
-            drawAlmostVase(c2, points, step, totalSteps);
-        }, 30);
+        if (!norun) {
+            setTimeout(function () {
+                drawAlmostVase(c2, points, step, totalSteps);
+            }, 30);
+        }
         c2.fillStyle = "#ffffff";
         c2.rect(0, 0, c2.canvas.width, c2.canvas.height);
         c2.fill();
@@ -150,27 +152,28 @@ var drawAlmostVase = function (c2, points, step, totalSteps) {
 
 }
 
-var drawVase = function (c2, points) {
+// var drawVase = function (c2, points) {
 
-    c2.fillStyle = vaseColor;
-    c2.beginPath();
+//     c2.fillStyle = vaseColor;
+//     c2.beginPath();
 
-    for (let i in points) {
-        let vertex = points[i]
-        console.log(c2)
-        c2.lineTo(c2.canvas.width / 2 - (vertex[0] * canvasVaseScale), (12.3 - vertex[1]) * canvasVaseScale + 80);
-    }
+//     for (let i in points) {
+//         let vertex = points[i]
+//         console.log(c2)
+//         c2.lineTo(c2.canvas.width / 2 - (vertex[0] * canvasVaseScale), (12.3 - vertex[1]) * canvasVaseScale + 80);
+//     }
 
-    /*
-    for (let i in points) {
-        let vertex = points[i]
-        c2.lineTo(firstCanvas.width / 2 + ((vertex[0] * scale)), (12.3 - vertex[1]) * scale + 80);
-    }
-    */
-    c2.closePath();
-    c2.fill();
+//     /*
+//     for (let i in points) {
+//         let vertex = points[i]
+//         c2.lineTo(firstCanvas.width / 2 + ((vertex[0] * scale)), (12.3 - vertex[1]) * scale + 80);
+//     }
+//     */
+//     c2.closePath();
+//     c2.fill();
 
-}
+// }
+
 
 var phiLength = Math.PI / 10;
 var geometry = new THREE.LatheGeometry(
@@ -267,14 +270,20 @@ var render = function () {
 
 // renderer.render(scene, camera);
 
+var c2;
 $(function () {
     var firstCanvas = document.getElementsByTagName("canvas")[0];
     var overlayCanvas = document.getElementById('overlay');
     overlayCanvas.width = firstCanvas.width;
     overlayCanvas.height = firstCanvas.height;
-    var c2 = overlayCanvas.getContext('2d');
+    c2 = overlayCanvas.getContext('2d');
 
     renderer.render(scene, camera);
+    drawAlmostVase(c2, vasePoints, 0, 300, true);
+})
+
+$(document).on('click', '.btn', function () {
+
     drawAlmostVase(c2, vasePoints, 0, 300);
 })
 
